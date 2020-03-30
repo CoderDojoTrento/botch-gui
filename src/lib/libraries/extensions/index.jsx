@@ -46,6 +46,11 @@ import gdxforInsetIconURL from './gdxfor/gdxfor-small.svg';
 import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
+// EvoScratch
+import imgProva from './prova/prova1.png';
+import imgProvaIco from './prova/prova1_ico.png';
+// --
+
 export default [
     {
         name: (
@@ -318,4 +323,26 @@ export default [
         ),
         helpLink: 'https://scratch.mit.edu/vernier'
     }
+    // EvoScratch
+    ,
+    {
+        name: 'Prova',
+        extensionId: 'prova',
+        collaborator: 'Me',
+        iconURL: imgProva,
+        insetIconURL: imgProvaIco,
+        description: (
+            <FormattedMessage
+                defaultMessage="TODO."
+                description="non fa niente"
+                id="gui.extension.prova.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        helpLink: 'https://scratch.mit.edu/wedo'
+    }
+    // --
 ];

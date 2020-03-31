@@ -16,10 +16,11 @@ cache:
   directories:
   - node_modules
 install:
+- npm install
+- npm update
 - cd node_modules/scratch-vm && npm link && ln -s $(npm root)/google-closure-library ../closure-library --force && npm --production=false install && cd -
 - npm link scratch-vm
 - npm install
-- npm update
 script:
 - npm test
 before_deploy:

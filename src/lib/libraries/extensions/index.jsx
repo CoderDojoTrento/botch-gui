@@ -322,9 +322,8 @@ export default [
             />
         ),
         helpLink: 'https://scratch.mit.edu/vernier'
-    }
+    },
     // EvoScratch
-    ,
     {
         name: 'Prova',
         extensionId: 'prova',

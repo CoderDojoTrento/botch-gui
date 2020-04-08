@@ -13,8 +13,10 @@ env:
   - NPM_TAG=latest
   - RELEASE_VERSION="0.1.0-prerelease.$(date +'%Y%m%d%H%M%S')"
 cache:
-  directories:
-  - node_modules
+#EvoScratch: let's disable cache for now
+  npm: false
+  #directories:
+  #- node_modules
 install:
 - npm --production=false install
 - npm update

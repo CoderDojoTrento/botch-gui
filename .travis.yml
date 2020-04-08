@@ -16,8 +16,9 @@ cache:
   directories:
   - node_modules
 install:
-- npm install
-- cd node_modules/scratch-vm && npm link && ln -s $(npm root)/google-closure-library ../closure-library --force && npm --production=false install && cd -
+- npm install --production=false
+- npm update
+- cd node_modules/scratch-vm && ln -s $(npm root)/google-closure-library ../closure-library --force && npm --production=false install && cd -
 script:
 - npm test
 before_deploy:
@@ -31,22 +32,25 @@ before_deploy:
     export BEFORE_DEPLOY_RAN=true
   fi
 deploy:
-- provider: npm
-  on:
-    branch:
-    - master
-    - develop
-    - hotfix/*
-    condition: $TRAVIS_EVENT_TYPE != cron
-  skip_cleanup: true
-  email: $NPM_EMAIL
-  api_key: $NPM_TOKEN
-  tag: $NPM_TAG
+# EvoScratch: don't need publishing to npm for now
+#- provider: npm
+#  on:
+#    branch:
+#    - master
+#    - develop
+#    - prove
+#    - hotfix/*
+#    condition: $TRAVIS_EVENT_TYPE != cron
+#  skip_cleanup: true
+#  email: $NPM_EMAIL
+#  api_key: $NPM_TOKEN
+#  tag: $NPM_TAG
 - provider: script
   on:
     branch:
     - master
     - develop
+    - prove    
     - smoke
     - hotfix/*
     condition: $TRAVIS_EVENT_TYPE != cron
@@ -61,7 +65,9 @@ deploy:
   script: npm run deploy -- -x -e $TRAVIS_BRANCH -r https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
 - provider: script
   on:
-    branch: develop
+    branch:
+    - develop
+    - prove    
     condition: $TRAVIS_EVENT_TYPE == cron
   skip_cleanup: true
   script: npm run i18n:src && npm run i18n:push

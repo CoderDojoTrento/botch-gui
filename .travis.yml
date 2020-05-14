@@ -67,11 +67,13 @@ deploy:
     tags: false # Don't push tags to gh-pages
   skip_cleanup: true
   script: npm run deploy -- -x -e $TRAVIS_BRANCH -r https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
-- provider: script
-  on:
-    branch:
-    - develop
-    - prove    
-    condition: $TRAVIS_EVENT_TYPE == cron
-  skip_cleanup: true
-  script: npm run i18n:src && npm run i18n:push
+# Evo Scratch: skip i18n, see 
+# https://github.com/CoderDojoTrento/evoscratch-gui/issues/7
+#- provider: script
+#  on:
+#    branch:
+#    - develop
+#    - prove    
+#    condition: $TRAVIS_EVENT_TYPE == cron
+#  skip_cleanup: true
+#  script: npm run i18n:src && npm run i18n:push

@@ -1,10 +1,63 @@
-# scratch-gui
-#### Scratch GUI is a set of React components that comprise the interface for creating and running Scratch 3.0 projects
+# evoscratch-gui
+
+#### EvoScratch GUI is a set of React components that comprise the interface for creating and running EvoScratch 3.0 projects
+
+ EvoScratch is developed by non-profit [CoderDolomiti Association](https://www.coderdolomiti.it) and it is a very small customization of the original Scratch GUI developed by Massachussets Insitute of Technology (MIT), which we thank for their great work. Authors of EvoScratch GUI are not affiliated in any way with MIT.
+
+#### STATUS: design phase
 
 [![Build Status](https://travis-ci.com/LLK/scratch-gui.svg?token=Yfq2ryN1BwaxDME69Lnc&branch=master)](https://travis-ci.com/LLK/scratch-gui)
-[![Greenkeeper badge](https://badges.greenkeeper.io/LLK/scratch-gui.svg)](https://greenkeeper.io/)
+
+**Why?** [Evolutionary computing](https://en.wikipedia.org/wiki/Evolutionary_computation) is a family of bio-inspired algorithms which attempt to discover optimal instructions a program should have in order to solve a given problem. In the world of education, [serious gaming](https://en.wikipedia.org/wiki/Serious_game) is a mean to convey complex concepts by means of playing special purpose games, with growing adoption both in schools and businesses. The aim of EvoScratch project is thus devising a serious gaming platform to show young generations in secondary schools aged 11-19 how organisms shapes and behavior can be encoded in a programming language, and how they can evolve to fulfill goals in a given environment.
+
+
+## EvoScratch documentation
+
+See 
+
+- [Thesis proposal](https://www.coderdolomiti.it/stage/)
+- [Milestons](https://github.com/CoderDojoTrento/evoscratch-gui/milestones)
+- [Issues](https://github.com/CoderDojoTrento/evoscratch-gui/issues)
+
+### evoscratch-GUI Development
+
+Original Scratch GUI documentation is in its wiki (as of May 2020 in /docs there are only images). See
+
+- https://github.com/LLK/scratch-gui/wiki/Getting-Started
+- https://github.com/LLK/scratch-gui/wiki/Debugging-with-Visual-Studio-Code
+
+How to build: https://github.com/LLK/scratch-gui/wiki/Publishing-to-GitHub-Pages
+
+For questions on Scratch internals, the [Scratch Open Source Projects Forum](https://scratch.mit.edu/discuss/49/) seems the place where to ask.
+
+EvoScratch Localization: https://github.com/CoderDojoTrento/evoscratch-gui/issues/7
+
+### evoscratch-VM Development
+
+EvoScratch-VM repo: https://github.com/CoderDojoTrento/evoscratch-vm
+
+Original scratch-vm documentation was in its wiki, but was moved to their `docs/` folder. See
+
+- https://github.com/LLK/scratch-vm/blob/develop/docs/extensions.md
+- https://github.com/LLK/scratch-vm/blob/develop/.github/CONTRIBUTING.md
+
+### scratch-www Development
+
+Original Documentation is in the wiki  https://github.com/LLK/scratch-www/wiki
+
+(as of May 2020 there is no `/docs` folder at all)
+
+## EvoScratch Milestones
+
+See [issues marked with Release](https://github.com/coderdojotrento/evoscratch-gui/issues?q=is%3Aissue+is%3Aopen+release)
+
+(created because unfortunately Github Milestones ignores newlines !)
+
+## ------- ORIGINAL  SCRATCH-GUI README   
+
 
 ## Installation
+
 This requires you to have Git and Node.js installed.
 
 In your own node environment/application:

@@ -1,3 +1,12 @@
+/*
+    COSE CHE SERVONO PER TAB:
+
+    onActivateOrganismsTab = ?
+    organismsTabVisible = ?
+
+*/
+
+
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
@@ -14,6 +23,7 @@ import Blocks from '../../containers/blocks.jsx';
 import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
+import OrganismTab from '../../containers/organism-tab.jsx'; /* EvoScratch */
 import StageWrapper from '../../containers/stage-wrapper.jsx';
 import Loader from '../loader/loader.jsx';
 import Box from '../box/box.jsx';
@@ -39,6 +49,8 @@ import addExtensionIcon from './icon--extensions.svg';
 import codeIcon from './icon--code.svg';
 import costumesIcon from './icon--costumes.svg';
 import soundsIcon from './icon--sounds.svg';
+
+import organismIcon from './icon--organism.svg'; /* EvoScratch */
 
 const messages = defineMessages({
     addExtension: {
@@ -95,7 +107,8 @@ const GUIComponent = props => {
         onOpenRegistration,
         onToggleLoginOpen,
         onActivateCostumesTab,
-        onActivateSoundsTab,
+        onActivateSoundsTab, 
+        onActivateOrganismsTab, /* EvoScratch */
         onActivateTab,
         onClickLogo,
         onExtensionButtonClick,
@@ -108,6 +121,7 @@ const GUIComponent = props => {
         onTelemetryModalCancel,
         onTelemetryModalOptIn,
         onTelemetryModalOptOut,
+        organismsTabVisible, /* EvoScratch */
         showComingSoon,
         soundsTabVisible,
         stageSizeMode,
@@ -136,7 +150,6 @@ const GUIComponent = props => {
 
     return (<MediaQuery minWidth={layout.fullSizeMinWidth}>{isFullSize => {
         const stageSize = resolveStageSize(stageSizeMode, isFullSize);
-
         return isPlayerOnly ? (
             <StageWrapper
                 isFullScreen={isFullScreen}
@@ -287,6 +300,25 @@ const GUIComponent = props => {
                                             id="gui.gui.soundsTab"
                                         />
                                     </Tab>
+
+                                    {/* EvoScratch */}
+
+                                    <Tab
+                                        className={tabClassNames.tab}
+                                        onClick={onActivateOrganismsTab}
+                                    >
+                                        <img
+                                            draggable={false}
+                                            src={organismIcon}
+                                        />
+                                        <FormattedMessage
+                                            defaultMessage="Organism"
+                                            description="Button to get to the organism panel"
+                                            id="gui.gui.?"
+                                        />
+                                    </Tab>
+
+
                                 </TabList>
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     <Box className={styles.blocksWrapper}>
@@ -324,6 +356,16 @@ const GUIComponent = props => {
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
                                 </TabPanel>
+
+                                {/* Evoscratch */}                    
+
+                                <TabPanel /* className={tabClassNames.tabPanel} */>
+                                    {organismsTabVisible ? <OrganismTab isRendererSupported={isRendererSupported}
+                                                                        isRtl={isRtl}
+                                                                        stageSize={stageSize}
+                                                                        vm={vm} /> : null}
+                                </TabPanel>
+                                
                             </Tabs>
                             {backpackVisible ? (
                                 <Backpack host={backpackHost} />
@@ -386,6 +428,7 @@ GUIComponent.propTypes = {
     loading: PropTypes.bool,
     logo: PropTypes.string,
     onActivateCostumesTab: PropTypes.func,
+    onActivateOrganismsTab: PropTypes.func, /* EvoScratch */
     onActivateSoundsTab: PropTypes.func,
     onActivateTab: PropTypes.func,
     onClickAccountNav: PropTypes.func,

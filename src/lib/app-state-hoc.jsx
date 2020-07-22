@@ -81,7 +81,8 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
             this.store = createStore(
                 reducer,
                 initialState,
-                enhancer
+                enhancer,
+                window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() // https://github.com/zalmoxisus/redux-devtools-extension
             );
         }
         componentDidUpdate (prevProps) {

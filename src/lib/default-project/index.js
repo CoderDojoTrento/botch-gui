@@ -6,7 +6,10 @@ import meowWav from '!arraybuffer-loader!./83c36d806dc92327b9e7049a565c6bff.wav'
 import backdrop from '!raw-loader!./cd21514d0531fdffb22204e0ec5ed84a.svg';
 import costume1 from '!raw-loader!./b7853f557e4426412e64bb3da6531a99.svg';
 import costume2 from '!raw-loader!./e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg';
+import triangle from '!raw-loader!./triangle.svg';
 /* eslint-enable import/no-unresolved */
+
+const md5 = require('js-md5');
 
 const defaultProject = translator => {
     let _TextEncoder;
@@ -40,15 +43,10 @@ const defaultProject = translator => {
         dataFormat: 'SVG',
         data: encoder.encode(backdrop)
     }, {
-        id: 'b7853f557e4426412e64bb3da6531a99',
+        id: md5(triangle),
         assetType: 'ImageVector',
         dataFormat: 'SVG',
-        data: encoder.encode(costume1)
-    }, {
-        id: 'e6ddc55a6ddd9cc9d84fe0b4c21e016f',
-        assetType: 'ImageVector',
-        dataFormat: 'SVG',
-        data: encoder.encode(costume2)
+        data: encoder.encode(triangle)
     }];
 };
 

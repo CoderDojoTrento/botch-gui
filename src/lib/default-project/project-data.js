@@ -1,5 +1,8 @@
 import {defineMessages} from 'react-intl';
 import sharedMessages from '../shared-messages';
+import triangle from '!raw-loader!./triangle.svg';
+
+const md5 = require('js-md5');
 
 let messages = defineMessages({
     meow: {
@@ -66,7 +69,7 @@ const projectData = translateFunction => {
             },
             {
                 isStage: false,
-                name: translator(messages.sprite, {index: 1}),
+                name: 'triangle',
                 variables: {},
                 lists: {},
                 broadcasts: {},
@@ -74,36 +77,18 @@ const projectData = translateFunction => {
                 currentCostume: 0,
                 costumes: [
                     {
-                        assetId: 'b7853f557e4426412e64bb3da6531a99',
-                        name: translator(messages.costume, {index: 1}),
+                        assetId: md5(triangle),
+                        name: 'triangle',
                         bitmapResolution: 1,
-                        md5ext: 'b7853f557e4426412e64bb3da6531a99.svg',
+                        md5ext: md5(triangle) + '.svg',
                         dataFormat: 'svg',
-                        rotationCenterX: 48,
+                        rotationCenterX: 50,
                         rotationCenterY: 50
-                    },
-                    {
-                        assetId: 'e6ddc55a6ddd9cc9d84fe0b4c21e016f',
-                        name: translator(messages.costume, {index: 2}),
-                        bitmapResolution: 1,
-                        md5ext: 'e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg',
-                        dataFormat: 'svg',
-                        rotationCenterX: 46,
-                        rotationCenterY: 53
                     }
                 ],
-                sounds: [
-                    {
-                        assetId: '83c36d806dc92327b9e7049a565c6bff',
-                        name: translator(messages.meow),
-                        dataFormat: 'wav',
-                        format: '',
-                        rate: 22050,
-                        sampleCount: 18688,
-                        md5ext: '83c36d806dc92327b9e7049a565c6bff.wav'
-                    }
-                ],
+                sounds: [],
                 volume: 100,
+                layerOrder: 1,
                 visible: true,
                 x: 0,
                 y: 0,

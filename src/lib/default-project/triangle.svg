@@ -1,4 +1,9 @@
-<svg height="100" width="100" viewBox="0 0 100 100" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg height="50" width="50" viewBox="0 0 50 50" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
     <title>triangle.1</title>
-    <polygon points="50,4 4,97 96,97" style="fill:lime;stroke:black;stroke-width:4" />
+    
+    <polygon points="4,4 4,47, 47,25" style="fill:lime;stroke:black;stroke-width:3" />
+    
+    <circle cx="45" cy="25" r="4" stroke="black" stroke-width="2" fill="red" />
+
 </svg>

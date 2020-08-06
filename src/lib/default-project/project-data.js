@@ -69,7 +69,7 @@ const projectData = translateFunction => {
             },
             {
                 isStage: false,
-                name: 'triangle',
+                name: 'organism',
                 variables: {},
                 lists: {},
                 broadcasts: {},

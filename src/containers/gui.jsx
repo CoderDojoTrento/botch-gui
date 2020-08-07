@@ -16,7 +16,8 @@ import {
     BLOCKS_TAB_INDEX,
     COSTUMES_TAB_INDEX,
     SOUNDS_TAB_INDEX,
-    ORGANISMS_TAB_INDEX
+    ORGANISMS_TAB_INDEX,
+    EVOSCRATCH_DEBUG_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {
@@ -143,6 +144,7 @@ const mapStateToProps = state => {
         isShowingProject: getIsShowingProject(loadingState),
         loadingStateVisible: state.scratchGui.modals.loadingProject,
         organismsTabVisible: state.scratchGui.editorTab.activeTabIndex === ORGANISMS_TAB_INDEX, /* EvoScratch */
+        evoscratchDebugTabVisible: state.scratchGui.editorTab.activeTabIndex === EVOSCRATCH_DEBUG_TAB_INDEX, /* EvoScratch */
         projectId: state.scratchGui.projectState.projectId,
         soundsTabVisible: state.scratchGui.editorTab.activeTabIndex === SOUNDS_TAB_INDEX,
         targetIsStage: (

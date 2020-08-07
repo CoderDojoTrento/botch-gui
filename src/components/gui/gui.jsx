@@ -24,6 +24,7 @@ import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
 import OrganismTab from '../../containers/organism-tab.jsx'; /* EvoScratch */
+import EvoScratchDebugTab from '../../containers/evoscratch-debug-tab.jsx'; 
 import StageWrapper from '../../containers/stage-wrapper.jsx';
 import Loader from '../loader/loader.jsx';
 import Box from '../box/box.jsx';
@@ -51,6 +52,7 @@ import costumesIcon from './icon--costumes.svg';
 import soundsIcon from './icon--sounds.svg';
 
 import organismIcon from './icon--organism.svg'; /* EvoScratch */
+import evoscratchDebugIcon from '../evoscratch/icon--evoscratch-debug.svg'; /* EvoScratch */
 
 const messages = defineMessages({
     addExtension: {
@@ -109,6 +111,7 @@ const GUIComponent = props => {
         onActivateCostumesTab,
         onActivateSoundsTab, 
         onActivateOrganismsTab, /* EvoScratch */
+        onActivateEvoScratchDebugTab, /* EvoScratch */
         onActivateTab,
         onClickLogo,
         onExtensionButtonClick,
@@ -122,6 +125,7 @@ const GUIComponent = props => {
         onTelemetryModalOptIn,
         onTelemetryModalOptOut,
         organismsTabVisible, /* EvoScratch */
+        evoscratchDebugTabVisible, /* EvoScratch */
         showComingSoon,
         soundsTabVisible,
         stageSizeMode,
@@ -318,6 +322,21 @@ const GUIComponent = props => {
                                         />
                                     </Tab>
 
+                                    <Tab
+                                        className={tabClassNames.tab}
+                                        onClick={onActivateEvoScratchDebugTab}
+                                    >
+                                        <img
+                                            draggable={false}
+                                            src={evoscratchDebugIcon}
+                                        />
+                                        <FormattedMessage
+                                            defaultMessage="EvoScratch Debug"
+                                            description="Button to get to EvoScratch Debug panel"
+                                            id="gui.gui.evoscratchDebugTab"
+                                        />
+                                    </Tab>
+
 
                                 </TabList>
                                 <TabPanel className={tabClassNames.tabPanel}>
@@ -361,6 +380,13 @@ const GUIComponent = props => {
 
                                 <TabPanel /* className={tabClassNames.tabPanel} */>
                                     {organismsTabVisible ? <OrganismTab isRendererSupported={isRendererSupported}
+                                                                        isRtl={isRtl}
+                                                                        stageSize={stageSize}
+                                                                        vm={vm} /> : null}
+                                </TabPanel>
+
+                                <TabPanel /* className={tabClassNames.tabPanel} */>
+                                    {evoscratchDebugTabVisible ? <EvoScratchDebugTab isRendererSupported={isRendererSupported}
                                                                         isRtl={isRtl}
                                                                         stageSize={stageSize}
                                                                         vm={vm} /> : null}
@@ -429,6 +455,7 @@ GUIComponent.propTypes = {
     logo: PropTypes.string,
     onActivateCostumesTab: PropTypes.func,
     onActivateOrganismsTab: PropTypes.func, /* EvoScratch */
+    onActivateEvoScratchDebugTab: PropTypes.func, /* EvoScratch */
     onActivateSoundsTab: PropTypes.func,
     onActivateTab: PropTypes.func,
     onClickAccountNav: PropTypes.func,

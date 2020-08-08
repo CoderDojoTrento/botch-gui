@@ -3,6 +3,7 @@ import React from 'react';
 import bindAll from 'lodash.bindall';
 import Renderer from 'scratch-render';
 import VM from 'scratch-vm';
+
 import {connect} from 'react-redux';
 
 import {defineMessages, intlShape, injectIntl} from 'react-intl';
@@ -13,9 +14,9 @@ import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import downloadBlob from '../lib/download-blob';
 
-import spriteLibraryContent from '../lib/libraries/sprites.json';
+
 import randomizeSpritePosition from '../lib/randomize-sprite-position';
-import spriteTags from '../lib/libraries/sprite-tags';
+//import spriteTags from '../lib/libraries/sprite-tags';
 
 import EvoScratchLifeTree from '../components/evoscratch/evoscratch-life-tree.jsx';
 
@@ -35,23 +36,47 @@ const messages = defineMessages({
     }
 });
 
-
 class EvoScratchDebugTab extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
             'handleItemSelect'
-        ]);
-        // this.state = {selectedSoundIndex: 0};
-  
-        console.log(props);
+        ]);        
+
+        this.state = {library_sprites:[]};
+        this.fetchSprites();
+        
+    }
+
+    fetchSprites(){
+        if (!window.EVOSCRATCH){
+            console.error("Evoscratch extension is not loaded !")
+            return
+        }
+        EVOSCRATCH.storageHelper.load_library_sprites().then((library_sprites)=> {
+            this.setState({library_sprites:library_sprites})
+        });
+
+    }
+
+    getTags(){
+        if (!window.EVOSCRATCH){
+            console.error("Evoscratch extension is not loaded !")
+            return
+        }
+        return EVOSCRATCH.storageHelper.get_all_tags()
+    }
+
+    handleSelect(index){
+        // TODO DOES NOT SHOW ANYTHING !
+        console.log('Selected tab: ' + index);
     }
 
     handleItemSelect (item) {
         // Randomize position of library sprite
         randomizeSpritePosition(item);
         this.props.vm.addSprite(JSON.stringify(item.json)).then(() => {
-            console.log("I should do something now ...")
+            console.log("EvoScratch: should I do something now ?")
             //this.props.onActivateBlocksTab();
         });
     }
@@ -59,12 +84,12 @@ class EvoScratchDebugTab extends React.Component {
     render() {
         
         return <EvoScratchLifeTree
-                data={spriteLibraryContent}
+                data={this.state.library_sprites}
                 id="evoscratchLifeTree"
-                tags={spriteTags}
+                tags={this.getTags()}
                 title={this.props.intl.formatMessage(messages.libraryTitle)}
                 onItemSelected={this.handleItemSelect}
-                onRequestClose= { () => console.log("I should close..")}
+                onRequestClose= { () => console.log("EvoScratch: I should close..")}
                 // onRequestClose={this.props.onRequestClose}
             />
         /*( 

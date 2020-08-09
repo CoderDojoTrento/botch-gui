@@ -3,6 +3,7 @@ import React from 'react';
 import bindAll from 'lodash.bindall';
 import Renderer from 'scratch-render';
 import VM from 'scratch-vm';
+
 import {connect} from 'react-redux';
 
 import {defineMessages, intlShape, injectIntl} from 'react-intl';
@@ -13,6 +14,12 @@ import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import downloadBlob from '../lib/download-blob';
 
+
+import randomizeSpritePosition from '../lib/randomize-sprite-position';
+//import spriteTags from '../lib/libraries/sprite-tags';
+
+import EvoScratchLifeTree from '../components/evoscratch/evoscratch-life-tree.jsx';
+
 import {
     activateTab,
     COSTUMES_TAB_INDEX
@@ -21,41 +28,71 @@ import {
 import {setRestore} from '../reducers/restore-deletion';
 import {showStandardAlert, closeAlertWithId} from '../reducers/alerts';
 
+const messages = defineMessages({
+    libraryTitle: {
+        defaultMessage: 'Choose a Sprite',
+        description: 'Heading for the sprite library',
+        id: 'gui.evoscratchDebugTab.lifetree'
+    }
+});
 
 class EvoScratchDebugTab extends React.Component {
     constructor (props) {
         super(props);
-        this.getCostume = this.getCostume.bind(this);
-        this.showCostume = this.showCostume.bind(this);
-        // this.state = {selectedSoundIndex: 0};
-  
-        console.log(props);
+        bindAll(this, [
+            'handleItemSelect'
+        ]);        
+
+        this.state = {library_sprites:[]};
+        this.fetchSprites();
+        
     }
 
-    /**
-     * Return the address of an SVG file
-     */
-    getCostume() {
-        const target = this.props.editingTarget;
-        const iconMd5 = this.props.sprites[target].costume.md5;
-        const costume = `https://cdn.assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/`;
-        console.log(costume);
-        return costume;
-    }
-    
-    showCostume() {
-        const canvas = document.getElementById('orgCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = "white";
-        var image = new Image();
-        image.onload = function(){
-            ctx.drawImage(this, 0,0);
+    fetchSprites(){
+        if (!window.EVOSCRATCH){
+            console.error("Evoscratch extension is not loaded !")
+            return
         }
-        image.src = this.getCostume();
+        EVOSCRATCH.storageHelper.load_library_sprites().then((library_sprites)=> {
+            this.setState({library_sprites:library_sprites})
+        });
+
+    }
+
+    getTags(){
+        if (!window.EVOSCRATCH){
+            console.error("Evoscratch extension is not loaded !")
+            return
+        }
+        return EVOSCRATCH.storageHelper.get_all_tags()
+    }
+
+    handleSelect(index){
+        // TODO DOES NOT SHOW ANYTHING !
+        console.log('Selected tab: ' + index);
+    }
+
+    handleItemSelect (item) {
+        // Randomize position of library sprite
+        randomizeSpritePosition(item);
+        this.props.vm.addSprite(JSON.stringify(item.json)).then(() => {
+            console.log("EvoScratch: should I do something now ?")
+            //this.props.onActivateBlocksTab();
+        });
     }
 
     render() {
-        return( 
+        
+        return <EvoScratchLifeTree
+                data={this.state.library_sprites}
+                id="evoscratchLifeTree"
+                tags={this.getTags()}
+                title={this.props.intl.formatMessage(messages.libraryTitle)}
+                onItemSelected={this.handleItemSelect}
+                onRequestClose= { () => console.log("EvoScratch: I should close..")}
+                // onRequestClose={this.props.onRequestClose}
+            />
+        /*( 
             <canvas
                 id="orgCanvas"
                 width={400} 
@@ -63,7 +100,7 @@ class EvoScratchDebugTab extends React.Component {
                 style={{border: '1px solid black', backgroundColor: 'white'}}
                 onClick={this.showCostume}>
             </canvas>            
-        );
+        );*/
     }
 }
 
@@ -71,13 +108,18 @@ class EvoScratchDebugTab extends React.Component {
     <image xlinkHref={this.getCostume()} width={90} height={90} />    
 </svg> */}
 
+
+
+
 EvoScratchDebugTab.propTypes = {
     dispatchUpdateRestore: PropTypes.func,
     editingTarget: PropTypes.string,
-    intl: intlShape,
+    intl: intlShape.isRequired,
     isRtl: PropTypes.bool,
+    onActivateBlocksTab: PropTypes.func,
     onActivateCostumesTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
+    onRequestClose: PropTypes.func,
     onRequestCloseSoundLibrary: PropTypes.func.isRequired,
     onShowImporting: PropTypes.func.isRequired,
     soundLibraryVisible: PropTypes.bool,
@@ -111,12 +153,15 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseSoundLibrary: () => {
         dispatch(closeSoundLibrary());
     },
+
     dispatchUpdateRestore: restoreState => {
         dispatch(setRestore(restoreState));
     },
     onCloseImporting: () => dispatch(closeAlertWithId('importingAsset')),
     onShowImporting: () => dispatch(showStandardAlert('importingAsset'))
 });
+
+// export default injectIntl(SpriteLibrary);
 
 export default errorBoundaryHOC('EvoScratchDebug Tab')(
     injectIntl(connect(

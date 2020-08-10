@@ -47,12 +47,34 @@ import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
 // Botch
-import imgProva from './prova/prova1.png';
-import imgProvaIco from './prova/prova1_ico.png';
+import imgBotch from './botch/botch1.png';
+import imgBotchIco from './botch/botch1_ico.png';
 // --
 
 export default [
+    // Botch
     {
+        name: 'Botch',
+        extensionId: 'botch',
+        collaborator: 'CoderDojo Trento',
+        iconURL: imgBotch,
+        insetIconURL: imgBotchIco,
+        description: (
+            <FormattedMessage
+                defaultMessage="Evolve creatures"
+                description="Description for the 'Botch' extension"
+                id="gui.extension.botch.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        // internetConnectionRequired: true,
+        bluetoothRequired: false,
+        // helpLink: 'https://scratch.mit.edu/wedo'
+    },
+    // --
+    {
+        
         name: (
             <FormattedMessage
                 defaultMessage="Music"
@@ -322,26 +344,5 @@ export default [
             />
         ),
         helpLink: 'https://scratch.mit.edu/vernier'
-    },
-    // Botch
-    {
-        name: 'Prova',
-        extensionId: 'prova',
-        collaborator: 'Me',
-        iconURL: imgProva,
-        insetIconURL: imgProvaIco,
-        description: (
-            <FormattedMessage
-                defaultMessage="TODO."
-                description="non fa niente"
-                id="gui.extension.prova.description"
-            />
-        ),
-        featured: true,
-        disabled: false,
-        internetConnectionRequired: true,
-        bluetoothRequired: false,
-        helpLink: 'https://scratch.mit.edu/wedo'
     }
-    // --
 ];

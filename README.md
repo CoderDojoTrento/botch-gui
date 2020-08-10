@@ -1,25 +1,25 @@
-# evoscratch-gui
+# botch-gui
 
-#### EvoScratch GUI is a set of React components that comprise the interface for creating and running EvoScratch 3.0 projects
+#### Botch GUI is a set of React components that comprise the interface for creating and running Botch 3.0 projects
 
- EvoScratch is developed by non-profit [CoderDolomiti Association](https://www.coderdolomiti.it) and it is a very small customization of the original Scratch GUI developed by Massachussets Insitute of Technology (MIT), which we thank for their great work. Authors of EvoScratch GUI are not affiliated in any way with MIT.
+ Botch is developed by non-profit [CoderDolomiti Association](https://www.coderdolomiti.it) and it is a very small customization of the original Scratch GUI developed by Massachussets Insitute of Technology (MIT), which we thank for their great work. Authors of Botch GUI are not affiliated in any way with MIT.
 
 #### STATUS: design phase
 
 [![Build Status](https://travis-ci.com/LLK/scratch-gui.svg?token=Yfq2ryN1BwaxDME69Lnc&branch=master)](https://travis-ci.com/LLK/scratch-gui)
 
-**Why?** [Evolutionary computing](https://en.wikipedia.org/wiki/Evolutionary_computation) is a family of bio-inspired algorithms which attempt to discover optimal instructions a program should have in order to solve a given problem. In the world of education, [serious gaming](https://en.wikipedia.org/wiki/Serious_game) is a mean to convey complex concepts by means of playing special purpose games, with growing adoption both in schools and businesses. The aim of EvoScratch project is thus devising a serious gaming platform to show young generations in secondary schools aged 11-19 how organisms shapes and behavior can be encoded in a programming language, and how they can evolve to fulfill goals in a given environment.
+**Why?** [Evolutionary computing](https://en.wikipedia.org/wiki/Evolutionary_computation) is a family of bio-inspired algorithms which attempt to discover optimal instructions a program should have in order to solve a given problem. In the world of education, [serious gaming](https://en.wikipedia.org/wiki/Serious_game) is a mean to convey complex concepts by means of playing special purpose games, with growing adoption both in schools and businesses. The aim of Botch project is thus devising a serious gaming platform to show young generations in secondary schools aged 11-19 how organisms shapes and behavior can be encoded in a programming language, and how they can evolve to fulfill goals in a given environment.
 
 
-## EvoScratch documentation
+## Botch documentation
 
 See 
 
 - [Thesis proposal](https://www.coderdolomiti.it/stage/)
-- [Milestons](https://github.com/CoderDojoTrento/evoscratch-gui/milestones)
-- [Issues](https://github.com/CoderDojoTrento/evoscratch-gui/issues)
+- [Milestons](https://github.com/CoderDojoTrento/botch-gui/milestones)
+- [Issues](https://github.com/CoderDojoTrento/botch-gui/issues)
 
-### evoscratch-GUI Development
+### botch-GUI Development
 
 Original Scratch GUI documentation is in its wiki (as of May 2020 in /docs there are only images). See
 
@@ -30,11 +30,11 @@ How to build: https://github.com/LLK/scratch-gui/wiki/Publishing-to-GitHub-Pages
 
 For questions on Scratch internals, the [Scratch Open Source Projects Forum](https://scratch.mit.edu/discuss/49/) seems the place where to ask.
 
-EvoScratch Localization: https://github.com/CoderDojoTrento/evoscratch-gui/issues/7
+Botch Localization: https://github.com/CoderDojoTrento/botch-gui/issues/7
 
-### evoscratch-VM Development
+### botch-VM Development
 
-EvoScratch-VM repo: https://github.com/CoderDojoTrento/evoscratch-vm
+Botch-VM repo: https://github.com/CoderDojoTrento/botch-vm
 
 Original scratch-vm documentation was in its wiki, but was moved to their `docs/` folder. See
 
@@ -70,9 +70,9 @@ In **settings.json**  add the following:
 "eslint.validate": ["javascript"]
 ```
 
-## EvoScratch Milestones
+## Botch Milestones
 
-See [issues marked with Release](https://github.com/coderdojotrento/evoscratch-gui/issues?q=is%3Aissue+is%3Aopen+release)
+See [issues marked with Release](https://github.com/coderdojotrento/botch-gui/issues?q=is%3Aissue+is%3Aopen+release)
 
 (created because unfortunately Github Milestones ignores newlines !)
 

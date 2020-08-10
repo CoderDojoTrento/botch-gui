@@ -13,7 +13,7 @@ env:
   - NPM_TAG=latest
   - RELEASE_VERSION="0.1.0-prerelease.$(date +'%Y%m%d%H%M%S')"
 cache:
-#EvoScratch: let's disable cache for now
+#Botch: let's disable cache for now
   npm: false
   #directories:
   #- node_modules
@@ -34,7 +34,7 @@ before_deploy:
     export BEFORE_DEPLOY_RAN=true
   fi
 deploy:
-# EvoScratch: don't need publishing to npm for now
+# Botch: don't need publishing to npm for now
 #- provider: npm
 #  on:
 #    branch:
@@ -62,15 +62,15 @@ deploy:
   on:
     all_branches: true
     #condition: $TRAVIS_EVENT_TYPE != cron && ! $TRAVIS_BRANCH =~ ^greenkeeper/
-    # EvoScratch: Let cron deploy - 
+    # Botch: Let cron deploy - 
     # NOTE: for some weird reason it's eating the ! see line 70 here 
-    #https://travis-ci.org/github/CoderDojoTrento/evoscratch-gui/jobs/687120683/config
+    #https://travis-ci.org/github/CoderDojoTrento/botch-gui/jobs/687120683/config
     #condition: ! $TRAVIS_BRANCH =~ ^greenkeeper/
     tags: false # Don't push tags to gh-pages
   skip_cleanup: true
   script: npm run deploy -- -x -e $TRAVIS_BRANCH -r https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
-# Evo Scratch: skip i18n, see 
-# https://github.com/CoderDojoTrento/evoscratch-gui/issues/7
+# Botch Scratch: skip i18n, see 
+# https://github.com/CoderDojoTrento/botch-gui/issues/7
 #- provider: script
 #  on:
 #    branch:

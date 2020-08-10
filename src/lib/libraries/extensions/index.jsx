@@ -46,7 +46,7 @@ import gdxforInsetIconURL from './gdxfor/gdxfor-small.svg';
 import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
-// EvoScratch
+// Botch
 import imgProva from './prova/prova1.png';
 import imgProvaIco from './prova/prova1_ico.png';
 // --
@@ -323,7 +323,7 @@ export default [
         ),
         helpLink: 'https://scratch.mit.edu/vernier'
     },
-    // EvoScratch
+    // Botch
     {
         name: 'Prova',
         extensionId: 'prova',

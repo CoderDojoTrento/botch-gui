@@ -16,9 +16,9 @@ import downloadBlob from '../lib/download-blob';
 
 
 import randomizeSpritePosition from '../lib/randomize-sprite-position';
-//import spriteTags from '../lib/libraries/sprite-tags';
+// import spriteTags from '../lib/libraries/sprite-tags';
 
-import EvoScratchLifeTree from '../components/evoscratch/evoscratch-life-tree.jsx';
+import BotchLifeTree from '../components/botch/botch-life-tree.jsx';
 
 import {
     activateTab,
@@ -32,92 +32,89 @@ const messages = defineMessages({
     libraryTitle: {
         defaultMessage: 'Choose a Sprite',
         description: 'Heading for the sprite library',
-        id: 'gui.evoscratchDebugTab.lifetree'
+        id: 'gui.botchDebugTab.lifetree'
     }
 });
 
-class EvoScratchDebugTab extends React.Component {
+class BotchDebugTab extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
             'handleItemSelect'
-        ]);        
+        ]);
 
-        this.state = {library_sprites:[]};                        
+        this.state = {library_sprites: []};
     }
 
     componentDidMount () {
         this.updateSprites();
-        this.props.vm.on("EVOSCRATCH_STORAGE_HELPER_UPDATE", this.updateSprites);
+        this.props.vm.on('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
     }
-    componentWillUnmount () {        
-        this.props.vm.removeListener("EVOSCRATCH_STORAGE_HELPER_UPDATE", this.updateSprites);
+    componentWillUnmount () {
+        this.props.vm.removeListener('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
     }
 
-    updateSprites(){
-        if (!window.EVOSCRATCH){
-            console.error("Evoscratch extension is not loaded !")
-            return
+    updateSprites (){
+        if (!window.BOTCH){
+            console.error('Botch extension is not loaded !');
+            return;
         }
-        EVOSCRATCH.storageHelper.load_library_sprites().then((library_sprites)=> {
-            this.setState({library_sprites:library_sprites})
+        BOTCH.storageHelper.load_library_sprites().then(library_sprites => {
+            this.setState({library_sprites: library_sprites});
         });
 
     }
 
-    getTags(){
-        if (!window.EVOSCRATCH){
-            console.error("Evoscratch extension is not loaded !")
-            return
+    getTags (){
+        if (!window.BOTCH){
+            console.error('Botch extension is not loaded !');
+            return;
         }
-        return EVOSCRATCH.storageHelper.get_all_tags()
+        return BOTCH.storageHelper.get_all_tags();
     }
 
-    handleSelect(index){
+    handleSelect (index){
         // TODO DOES NOT SHOW ANYTHING !
-        console.log('Selected tab: ' + index);
+        console.log(`Selected tab: ${index}`);
     }
 
     handleItemSelect (item) {
         // Randomize position of library sprite
         randomizeSpritePosition(item);
         this.props.vm.addSprite(JSON.stringify(item.json)).then(() => {
-            console.log("EvoScratch: should I do something now ?")
-            //this.props.onActivateBlocksTab();
+            console.log('Botch: should I do something now ?');
+            // this.props.onActivateBlocksTab();
         });
     }
 
-    render() {
+    render () {
         
-        return <EvoScratchLifeTree
-                data={this.state.library_sprites}
-                id="evoscratchLifeTree"
-                tags={this.getTags()}
-                title={this.props.intl.formatMessage(messages.libraryTitle)}
-                onItemSelected={this.handleItemSelect}
-                onRequestClose= { () => console.log("EvoScratch: I should close..")}
-                // onRequestClose={this.props.onRequestClose}
-            />
-        /*( 
+        return (<BotchLifeTree
+            data={this.state.library_sprites}
+            id="botchLifeTree"
+            tags={this.getTags()}
+            title={this.props.intl.formatMessage(messages.libraryTitle)}
+            onItemSelected={this.handleItemSelect}
+            onRequestClose={() => console.log('Botch: I should close..')}
+        />);
+        /* (
             <canvas
                 id="orgCanvas"
-                width={400} 
-                height={400} 
+                width={400}
+                height={400}
                 style={{border: '1px solid black', backgroundColor: 'white'}}
                 onClick={this.showCostume}>
-            </canvas>            
+            </canvas>
         );*/
     }
 }
 
-{/* <svg width={90} height={90}>       
-    <image xlinkHref={this.getCostume()} width={90} height={90} />    
-</svg> */}
+{ /* <svg width={90} height={90}>
+    <image xlinkHref={this.getCostume()} width={90} height={90} />
+</svg> */ }
 
 
-
-
-EvoScratchDebugTab.propTypes = {
+BotchDebugTab.propTypes = {
     dispatchUpdateRestore: PropTypes.func,
     editingTarget: PropTypes.string,
     intl: intlShape.isRequired,
@@ -169,9 +166,9 @@ const mapDispatchToProps = dispatch => ({
 
 // export default injectIntl(SpriteLibrary);
 
-export default errorBoundaryHOC('EvoScratchDebug Tab')(
+export default errorBoundaryHOC('BotchDebug Tab')(
     injectIntl(connect(
         mapStateToProps,
         mapDispatchToProps
-    )(EvoScratchDebugTab))
+    )(BotchDebugTab))
 );

@@ -17,7 +17,7 @@ import {
     COSTUMES_TAB_INDEX,
     SOUNDS_TAB_INDEX,
     ORGANISMS_TAB_INDEX,
-    EVOSCRATCH_DEBUG_TAB_INDEX
+    BOTCH_DEBUG_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {
@@ -143,8 +143,8 @@ const mapStateToProps = state => {
         isRtl: state.locales.isRtl,
         isShowingProject: getIsShowingProject(loadingState),
         loadingStateVisible: state.scratchGui.modals.loadingProject,
-        organismsTabVisible: state.scratchGui.editorTab.activeTabIndex === ORGANISMS_TAB_INDEX, /* EvoScratch */
-        evoscratchDebugTabVisible: state.scratchGui.editorTab.activeTabIndex === EVOSCRATCH_DEBUG_TAB_INDEX, /* EvoScratch */
+        organismsTabVisible: state.scratchGui.editorTab.activeTabIndex === ORGANISMS_TAB_INDEX, /* Botch */
+        botchDebugTabVisible: state.scratchGui.editorTab.activeTabIndex === BOTCH_DEBUG_TAB_INDEX, /* Botch */
         projectId: state.scratchGui.projectState.projectId,
         soundsTabVisible: state.scratchGui.editorTab.activeTabIndex === SOUNDS_TAB_INDEX,
         targetIsStage: (
@@ -162,7 +162,7 @@ const mapDispatchToProps = dispatch => ({
     onActivateTab: tab => dispatch(activateTab(tab)),
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
-    onActivateOrganismsTab: () => dispatch(activateTab(ORGANISMS_TAB_INDEX)), /* EvoScratch */
+    onActivateOrganismsTab: () => dispatch(activateTab(ORGANISMS_TAB_INDEX)), /* Botch */
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
     onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal())

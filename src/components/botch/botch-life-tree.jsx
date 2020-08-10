@@ -11,7 +11,7 @@ import Filter from '../filter/filter.jsx';
 import TagButton from '../../containers/tag-button.jsx';
 import Spinner from '../spinner/spinner.jsx';
 
-import styles from './evoscratch-life-tree.css';
+import styles from './botch-life-tree.css';
 
 const messages = defineMessages({
     filterPlaceholder: {
@@ -29,7 +29,7 @@ const messages = defineMessages({
 const ALL_TAG = {tag: 'all', intlLabel: messages.allTag};
 const tagListPrefix = [ALL_TAG];
 
-class EvoScratchLifeTree extends React.Component {
+class BotchLifeTree extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
@@ -247,7 +247,7 @@ class EvoScratchLifeTree extends React.Component {
     }
 }
 
-EvoScratchLifeTree.propTypes = {
+BotchLifeTree.propTypes = {
     data: PropTypes.arrayOf(
         /* eslint-disable react/no-unused-prop-types, lines-around-comment */
         // An item in the library
@@ -275,9 +275,9 @@ EvoScratchLifeTree.propTypes = {
     title: PropTypes.string.isRequired
 };
 
-EvoScratchLifeTree.defaultProps = {
+BotchLifeTree.defaultProps = {
     filterable: true,
     showPlayButton: false
 };
 
-export default injectIntl(EvoScratchLifeTree);
+export default injectIntl(BotchLifeTree);

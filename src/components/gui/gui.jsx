@@ -23,8 +23,8 @@ import Blocks from '../../containers/blocks.jsx';
 import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
-import OrganismTab from '../../containers/organism-tab.jsx'; /* EvoScratch */
-import EvoScratchDebugTab from '../../containers/evoscratch-debug-tab.jsx'; 
+import OrganismTab from '../../containers/organism-tab.jsx'; /* Botch */
+import BotchDebugTab from '../../containers/botch-debug-tab.jsx';
 import StageWrapper from '../../containers/stage-wrapper.jsx';
 import Loader from '../loader/loader.jsx';
 import Box from '../box/box.jsx';
@@ -51,8 +51,8 @@ import codeIcon from './icon--code.svg';
 import costumesIcon from './icon--costumes.svg';
 import soundsIcon from './icon--sounds.svg';
 
-import organismIcon from './icon--organism.svg'; /* EvoScratch */
-import evoscratchDebugIcon from '../evoscratch/icon--evoscratch-debug.svg'; /* EvoScratch */
+import organismIcon from './icon--organism.svg'; /* Botch */
+import botchDebugIcon from '../botch/icon--botch-debug.svg'; /* Botch */
 
 const messages = defineMessages({
     addExtension: {
@@ -109,9 +109,9 @@ const GUIComponent = props => {
         onOpenRegistration,
         onToggleLoginOpen,
         onActivateCostumesTab,
-        onActivateSoundsTab, 
-        onActivateOrganismsTab, /* EvoScratch */
-        onActivateEvoScratchDebugTab, /* EvoScratch */
+        onActivateSoundsTab,
+        onActivateOrganismsTab, /* Botch */
+        onActivateBotchDebugTab, /* Botch */
         onActivateTab,
         onClickLogo,
         onExtensionButtonClick,
@@ -124,8 +124,8 @@ const GUIComponent = props => {
         onTelemetryModalCancel,
         onTelemetryModalOptIn,
         onTelemetryModalOptOut,
-        organismsTabVisible, /* EvoScratch */
-        evoscratchDebugTabVisible, /* EvoScratch */
+        organismsTabVisible, /* Botch */
+        botchDebugTabVisible, /* Botch */
         showComingSoon,
         soundsTabVisible,
         stageSizeMode,
@@ -305,7 +305,7 @@ const GUIComponent = props => {
                                         />
                                     </Tab>
 
-                                    {/* EvoScratch */}
+                                    {/* Botch */}
 
                                     <Tab
                                         className={tabClassNames.tab}
@@ -324,16 +324,16 @@ const GUIComponent = props => {
 
                                     <Tab
                                         className={tabClassNames.tab}
-                                        onClick={onActivateEvoScratchDebugTab}
+                                        onClick={onActivateBotchDebugTab}
                                     >
                                         <img
                                             draggable={false}
-                                            src={evoscratchDebugIcon}
+                                            src={botchDebugIcon}
                                         />
                                         <FormattedMessage
-                                            defaultMessage="EvoScratch Debug"
-                                            description="Button to get to EvoScratch Debug panel"
-                                            id="gui.gui.evoscratchDebugTab"
+                                            defaultMessage="Botch Debug"
+                                            description="Button to get to Botch Debug panel"
+                                            id="gui.gui.botchDebugTab"
                                         />
                                     </Tab>
 
@@ -376,20 +376,24 @@ const GUIComponent = props => {
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
                                 </TabPanel>
 
-                                {/* Evoscratch */}                    
+                                {/* Botch */}
 
                                 <TabPanel /* className={tabClassNames.tabPanel} */>
-                                    {organismsTabVisible ? <OrganismTab isRendererSupported={isRendererSupported}
-                                                                        isRtl={isRtl}
-                                                                        stageSize={stageSize}
-                                                                        vm={vm} /> : null}
+                                    {organismsTabVisible ? <OrganismTab
+                                        isRendererSupported={isRendererSupported}
+                                        isRtl={isRtl}
+                                        stageSize={stageSize}
+                                        vm={vm}
+                                    /> : null}
                                 </TabPanel>
 
                                 <TabPanel /* className={tabClassNames.tabPanel} */>
-                                    {evoscratchDebugTabVisible ? <EvoScratchDebugTab isRendererSupported={isRendererSupported}
-                                                                        isRtl={isRtl}
-                                                                        stageSize={stageSize}
-                                                                        vm={vm} /> : null}
+                                    {botchDebugTabVisible ? <BotchDebugTab
+                                        isRendererSupported={isRendererSupported}
+                                        isRtl={isRtl}
+                                        stageSize={stageSize}
+                                        vm={vm}
+                                    /> : null}
                                 </TabPanel>
                                 
                             </Tabs>
@@ -454,8 +458,8 @@ GUIComponent.propTypes = {
     loading: PropTypes.bool,
     logo: PropTypes.string,
     onActivateCostumesTab: PropTypes.func,
-    onActivateOrganismsTab: PropTypes.func, /* EvoScratch */
-    onActivateEvoScratchDebugTab: PropTypes.func, /* EvoScratch */
+    onActivateOrganismsTab: PropTypes.func, /* Botch */
+    onActivateBotchDebugTab: PropTypes.func, /* Botch */
     onActivateSoundsTab: PropTypes.func,
     onActivateTab: PropTypes.func,
     onClickAccountNav: PropTypes.func,

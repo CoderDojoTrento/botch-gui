@@ -43,12 +43,18 @@ class EvoScratchDebugTab extends React.Component {
             'handleItemSelect'
         ]);        
 
-        this.state = {library_sprites:[]};
-        this.fetchSprites();
-        
+        this.state = {library_sprites:[]};                        
     }
 
-    fetchSprites(){
+    componentDidMount () {
+        this.updateSprites();
+        this.props.vm.on("EVOSCRATCH_STORAGE_HELPER_UPDATE", this.updateSprites);
+    }
+    componentWillUnmount () {        
+        this.props.vm.removeListener("EVOSCRATCH_STORAGE_HELPER_UPDATE", this.updateSprites);
+    }
+
+    updateSprites(){
         if (!window.EVOSCRATCH){
             console.error("Evoscratch extension is not loaded !")
             return

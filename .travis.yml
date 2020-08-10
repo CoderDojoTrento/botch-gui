@@ -69,7 +69,7 @@ deploy:
     tags: false # Don't push tags to gh-pages
   skip_cleanup: true
   script: npm run deploy -- -x -e $TRAVIS_BRANCH -r https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
-# Botch Scratch: skip i18n, see 
+# Botch: skip i18n, see 
 # https://github.com/CoderDojoTrento/botch-gui/issues/7
 #- provider: script
 #  on:

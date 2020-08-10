@@ -47,6 +47,29 @@ Original Documentation is in the wiki  https://github.com/LLK/scratch-www/wiki
 
 (as of May 2020 there is no `/docs` folder at all)
 
+### settings for vs-code and eslint
+
+To avoid useless screaming by the linter is better to setup vs-code to change automatically the code (on save) and warn you when something can be seen as a problem by the linter.
+
+The first thing needed is eslint
+``` bash
+npm install -g eslint
+```
+Then install the VS-Code extension: **ESLint** (Ctrl+P => *ext install dbaeumer.vscode-eslint*)
+
+In **settings.json**  add the following:
+``` json
+"editor.formatOnSave": true,
+"javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+"eslint.enable": true,
+"eslint.alwaysShowStatus": true,
+"editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+},
+"eslint.validate": ["javascript"]
+```
+
 ## EvoScratch Milestones
 
 See [issues marked with Release](https://github.com/coderdojotrento/evoscratch-gui/issues?q=is%3Aissue+is%3Aopen+release)

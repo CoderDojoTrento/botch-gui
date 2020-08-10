@@ -15,9 +15,23 @@
 
 See 
 
-- [Thesis proposal](https://www.coderdolomiti.it/stage/)
+- [Thesis proposal](https://www.coderdolomiti.it/stage/#botch)
 - [Milestons](https://github.com/CoderDojoTrento/botch-gui/milestones)
 - [Issues](https://github.com/CoderDojoTrento/botch-gui/issues)
+
+
+### Directory structure
+
+It is recommended that you develop in Visual Studio Code putting code in following directory structure:
+
+```
+botch
+    .vscode
+        settings.json
+    botch-gui
+    botch-vm
+    botch-storage
+```
 
 ### botch-GUI Development
 
@@ -49,16 +63,19 @@ Original Documentation is in the wiki  https://github.com/LLK/scratch-www/wiki
 
 ### settings for vs-code and eslint
 
-To avoid useless screaming by the linter is better to setup vs-code to change automatically the code (on save) and warn you when something can be seen as a problem by the linter.
+To avoid useless screaming by the linter it is better to setup vs-code to change automatically the code (on save) and warn you when something can be seen as a problem by the linter.
 
-The first thing needed is eslint
+The first thing needed is eslint:
+
 ``` bash
 npm install -g eslint
 ```
-Then install the VS-Code extension: **ESLint** (Ctrl+P => *ext install dbaeumer.vscode-eslint*)
 
-In **settings.json**  add the following:
-``` json
+Then install the VS-Code extension: **ESLint** (Ctrl+P => `ext install dbaeumer.vscode-eslint`)
+
+In **botch/.vscode/settings.json**  add the following:
+
+```json
 "editor.formatOnSave": true,
 "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
 "editor.defaultFormatter": "dbaeumer.vscode-eslint",

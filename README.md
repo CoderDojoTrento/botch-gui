@@ -2,7 +2,7 @@
 
 #### Botch GUI is a set of React components that comprise the interface for creating and running Botch 3.0 projects
 
- Botch is developed by non-profit [CoderDolomiti Association](https://www.coderdolomiti.it) and it is a very small customization of the original Scratch GUI developed by Massachussets Insitute of Technology (MIT), which we thank for their great work. Authors of Botch GUI are not affiliated in any way with MIT.
+ Botch is developed by non-profit [CoderDolomiti Association](https://www.coderdolomiti.it) and it is a very small customization of the original Scratch GUI developed by Massachussets Institute of Technology (MIT), which we thank for their great work. Authors of Botch GUI are not affiliated in any way with MIT.
 
 #### STATUS: design phase
 

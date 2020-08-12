@@ -34,6 +34,33 @@ const messages = defineMessages({
 /* global BOTCH */
 
 class BotchDebugTab extends React.Component {
+    /**
+     * Given a name and a list of existing names, if name is in the list
+     * generates a new name appending numbers to it.
+     *
+     * @param {string} name name to test
+     * @param {Set<string>} names a set of existing names.
+     * @returns {string} the new candidate name
+     * @since botch-0.2
+     */
+    static findNewName (name, names){
+        let candidate = name;
+        let i = 1;
+        while (names.has(candidate)) {
+            const last = name[name.length - 1];
+            
+            if (last >= '0' && last <= '9' && i < 10){
+                candidate = candidate.slice(0, candidate.length - 1) + i;
+                i += 1;
+            } else {
+                i = 1;
+                const n = (last >= '0' && last <= '9') ? '0' : ' 1';
+                candidate = `${name.slice(0, candidate.length)}${n}`;
+            }
+        }
+        return candidate;
+    }
+    
     constructor (props) {
         super(props);
         bindAll(this, [
@@ -53,6 +80,7 @@ class BotchDebugTab extends React.Component {
         console.log('Botch: botch-debug-tab ComponentWillUnmount');
         this.props.vm.removeListener('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
     }
+    
 
     updateSprites (){
         
@@ -64,6 +92,14 @@ class BotchDebugTab extends React.Component {
         
         // console.log('this=', this);
         BOTCH.storageHelper.loadLibrarySprites().then(librarySprites => {
+            const names = new Set();
+            for (const libSprite of librarySprites){
+                const candidate = BotchDebugTab.findNewName(libSprite.name, names);
+                libSprite.name = candidate;
+                libSprite.json.name = candidate;
+                libSprite.json.objName = candidate;
+                names.add(candidate);
+            }
             
             this.setState({librarySprites: librarySprites});
         });
@@ -104,7 +140,6 @@ class BotchDebugTab extends React.Component {
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}
             onItemSelected={this.handleItemSelect}
-            onRequestClose={this.handleRequestClose}
         />);
         /* (
             <canvas
@@ -126,7 +161,6 @@ BotchDebugTab.propTypes = {
     isRtl: PropTypes.bool,
     onActivateBlocksTab: PropTypes.func,
     onCloseImporting: PropTypes.func.isRequired,
-    onRequestClose: PropTypes.func,
     
     onShowImporting: PropTypes.func.isRequired,
     soundLibraryVisible: PropTypes.bool,

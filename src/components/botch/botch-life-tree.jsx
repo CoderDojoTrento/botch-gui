@@ -67,7 +67,7 @@ class BotchLifeTree extends React.Component {
         this.props.onItemSelected(this.getFilteredData()[id]);
     }
     handleClose () {
-        this.props.onRequestClose();
+        
     }
     handleTagClick (tag) {
         if (this.state.playingItem === null) {
@@ -269,7 +269,6 @@ BotchLifeTree.propTypes = {
     onItemMouseEnter: PropTypes.func,
     onItemMouseLeave: PropTypes.func,
     onItemSelected: PropTypes.func,
-    onRequestClose: PropTypes.func,
     setStopHandler: PropTypes.func,
     showPlayButton: PropTypes.bool,
     tags: PropTypes.arrayOf(PropTypes.shape(TagButton.propTypes)),

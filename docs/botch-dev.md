@@ -36,3 +36,16 @@ receive the message:
 ```javascript
    this.props.vm.on('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
 ```    
+
+
+NOTE: If you are in GUI, you need to bind the method, otherwise `this` will not be accessible:
+
+```javascript
+constructor (props) {
+        super(props);
+        bindAll(this, [
+            'handleItemSelect',
+            'updateSprites'
+        ]);
+```
+

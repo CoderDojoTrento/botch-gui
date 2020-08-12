@@ -1,18 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import bindAll from 'lodash.bindall';
-import Renderer from 'scratch-render';
 import VM from 'scratch-vm';
 
 import {connect} from 'react-redux';
 
 import {defineMessages, intlShape, injectIntl} from 'react-intl';
 
-
-import {handleFileUpload} from '../lib/file-uploader.js';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
-import DragConstants from '../lib/drag-constants';
-import downloadBlob from '../lib/download-blob';
 
 
 import randomizeSpritePosition from '../lib/randomize-sprite-position';
@@ -36,31 +31,41 @@ const messages = defineMessages({
     }
 });
 
+/* global BOTCH */
+
 class BotchDebugTab extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleItemSelect'
+            'handleItemSelect',
+            'updateSprites'
         ]);
 
-        this.state = {library_sprites: []};
+        this.state = {librarySprites: []};
     }
 
     componentDidMount () {
+        console.log('Botch: botch-debug-tab ComponentDidMount');
         this.updateSprites();
         this.props.vm.on('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
     }
     componentWillUnmount () {
+        console.log('Botch: botch-debug-tab ComponentWillUnmount');
         this.props.vm.removeListener('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
     }
 
     updateSprites (){
+        
+        console.log('Botch: botch-debug-tab updateSprites. this=', this);
         if (!window.BOTCH){
             console.error('Botch extension is not loaded !');
             return;
         }
-        BOTCH.storageHelper.load_library_sprites().then(library_sprites => {
-            this.setState({library_sprites: library_sprites});
+        
+        // console.log('this=', this);
+        BOTCH.storageHelper.loadLibrarySprites().then(librarySprites => {
+            
+            this.setState({librarySprites: librarySprites});
         });
 
     }
@@ -87,15 +92,19 @@ class BotchDebugTab extends React.Component {
         });
     }
 
+    requestClose (){
+        console.log('Should I do something on close ?');
+    }
+
     render () {
         
         return (<BotchLifeTree
-            data={this.state.library_sprites}
+            data={this.state.librarySprites}
             id="botchLifeTree"
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}
             onItemSelected={this.handleItemSelect}
-            onRequestClose={() => console.log('Botch: I should close..')}
+            onRequestClose={this.handleRequestClose}
         />);
         /* (
             <canvas
@@ -109,10 +118,6 @@ class BotchDebugTab extends React.Component {
     }
 }
 
-{ /* <svg width={90} height={90}>
-    <image xlinkHref={this.getCostume()} width={90} height={90} />
-</svg> */ }
-
 
 BotchDebugTab.propTypes = {
     dispatchUpdateRestore: PropTypes.func,
@@ -120,10 +125,9 @@ BotchDebugTab.propTypes = {
     intl: intlShape.isRequired,
     isRtl: PropTypes.bool,
     onActivateBlocksTab: PropTypes.func,
-    onActivateCostumesTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func,
-    onRequestCloseSoundLibrary: PropTypes.func.isRequired,
+    
     onShowImporting: PropTypes.func.isRequired,
     soundLibraryVisible: PropTypes.bool,
     soundRecorderVisible: PropTypes.bool,
@@ -146,16 +150,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
-    onNewSoundFromLibraryClick: e => {
-        e.preventDefault();
-        dispatch(openSoundLibrary());
-    },
-    onNewSoundFromRecordingClick: () => {
-        dispatch(openSoundRecorder());
-    },
-    onRequestCloseSoundLibrary: () => {
-        dispatch(closeSoundLibrary());
-    },
 
     dispatchUpdateRestore: restoreState => {
         dispatch(setRestore(restoreState));

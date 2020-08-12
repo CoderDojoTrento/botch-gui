@@ -5,7 +5,6 @@ import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import LibraryItem from '../../containers/library-item.jsx';
-import Modal from '../../containers/modal.jsx';
 import Divider from '../divider/divider.jsx';
 import Filter from '../filter/filter.jsx';
 import TagButton from '../../containers/tag-button.jsx';
@@ -129,7 +128,9 @@ class BotchLifeTree extends React.Component {
     }
     getFilteredData () {
         if (this.state.selectedTag === 'all') {
-            if (!this.state.filterQuery) return this.props.data;
+            if (!this.state.filterQuery) {
+                return this.props.data;
+            }
             return this.props.data.filter(dataItem => (
                 (dataItem.tags || [])
                     // Second argument to map sets `this`

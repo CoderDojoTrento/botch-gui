@@ -2,6 +2,8 @@ import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {injectIntl} from 'react-intl';
+import getCostumeUrl from '../../lib/get-costume-url';
+
 
 import LibraryItemComponent from '../../components/library-item/library-item.jsx';
 
@@ -104,10 +106,23 @@ class BotchLifeTreeItem extends React.PureComponent {
         return iconMd5Prop;
     }
     render () {
-        const iconMd5 = this.curIconMd5();
-        const iconURL = iconMd5 ?
-            `https://cdn.assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/` :
-            this.props.iconRawURL;
+        
+        let iconURL;
+        let costume = this.props.icons[0];
+        if (costume.asset){ // Botch: our sprites have full asset data
+            if (this.props.icons &&
+                this.state.isRotatingIcon &&
+                this.state.iconIndex < this.props.icons.length){
+                costume = this.props.icons[this.state.iconIndex];
+            }
+            iconURL = getCostumeUrl(costume.asset);
+        } else { // original Scratch method, fetches from the web
+            const iconMd5 = this.curIconMd5();
+            iconURL = iconMd5 ?
+                `https://cdn.assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/` :
+                this.props.iconRawURL;
+        }
+        
         return (
             <LibraryItemComponent
                 bluetoothRequired={this.props.bluetoothRequired}
@@ -153,7 +168,8 @@ BotchLifeTreeItem.propTypes = {
     iconRawURL: PropTypes.string,
     icons: PropTypes.arrayOf(
         PropTypes.shape({
-            baseLayerMD5: PropTypes.string, // 2.0 library format, TODO GH-5084
+            asset: PropTypes.object, // Botch
+            baseLayerMD5: PropTypes.string, // 2.0 library format, TO DO GH-5084
             md5ext: PropTypes.string // 3.0 library format
         })
     ),

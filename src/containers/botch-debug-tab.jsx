@@ -91,7 +91,7 @@ class BotchDebugTab extends React.Component {
         }
         
         // console.log('this=', this);
-        BOTCH.storageHelper.loadLibrarySprites().then(librarySprites => {
+        BOTCH.loadLibrarySprites().then(librarySprites => {
             const names = new Set();
             for (const libSprite of librarySprites){
                 const candidate = BotchDebugTab.findNewName(libSprite.name, names);
@@ -111,7 +111,7 @@ class BotchDebugTab extends React.Component {
             console.error('Botch extension is not loaded !');
             return;
         }
-        return BOTCH.storageHelper.get_all_tags();
+        return BOTCH.storageHelper.getAllTags();
     }
 
     handleSelect (index){

@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
-import LibraryItem from '../../containers/library-item.jsx';
 import Divider from '../divider/divider.jsx';
 import Filter from '../filter/filter.jsx';
 import TagButton from '../../containers/tag-button.jsx';
 import Spinner from '../spinner/spinner.jsx';
 
 import styles from './botch-life-tree.css';
+import BotchLifeTreeItem from './botch-life-tree-item.jsx';
 
 const messages = defineMessages({
     filterPlaceholder: {
@@ -27,6 +27,7 @@ const messages = defineMessages({
 
 const ALL_TAG = {tag: 'all', intlLabel: messages.allTag};
 const tagListPrefix = [ALL_TAG];
+
 
 class BotchLifeTree extends React.Component {
     constructor (props) {
@@ -212,7 +213,7 @@ class BotchLifeTree extends React.Component {
                     ref={this.setFilteredDataRef}
                 >
                     {this.state.loaded ? this.getFilteredData().map((dataItem, index) => (
-                        <LibraryItem
+                        <BotchLifeTreeItem
                             bluetoothRequired={dataItem.bluetoothRequired}
                             collaborator={dataItem.collaborator}
                             description={dataItem.description}
@@ -220,7 +221,11 @@ class BotchLifeTree extends React.Component {
                             extensionId={dataItem.extensionId}
                             featured={dataItem.featured}
                             hidden={dataItem.hidden}
-                            iconMd5={dataItem.md5}
+                            
+                            // Botch: our sprite md5 can be different from first costume
+                            // iconMd5={dataItem.md5}
+                            iconMd5={(dataItem.json && dataItem.json.costumes[0]) ?
+                                dataItem.json.costumes[0].md5ext : dataItem.md5}
                             iconRawURL={dataItem.rawURL}
                             icons={dataItem.json && dataItem.json.costumes}
                             id={index}

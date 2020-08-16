@@ -160,6 +160,17 @@ class BotchLifeTree extends React.Component {
         this.filteredDataRef = ref;
     }
     render () {
+        const levels = 3;
+
+        const viewporth = 300;
+        const viewportw = 300;
+        const deltah = 50
+        const nodeh = 100
+        const nodew = 150;
+        const levh = deltah*2 + nodeh;
+        const toth = deltah + levh * levels;
+        const connectorStyle = {fill:"lime",stroke:"purple",strokeWidth:5,fillRule:"nonzero"};
+
         return (
             /*
             <Modal
@@ -213,32 +224,44 @@ class BotchLifeTree extends React.Component {
                     ref={this.setFilteredDataRef}
                 >
                     {this.state.loaded ? this.getFilteredData().map((dataItem, index) => (
-                        <BotchLifeTreeItem
-                            bluetoothRequired={dataItem.bluetoothRequired}
-                            collaborator={dataItem.collaborator}
-                            description={dataItem.description}
-                            disabled={dataItem.disabled}
-                            extensionId={dataItem.extensionId}
-                            featured={dataItem.featured}
-                            hidden={dataItem.hidden}
+                        <div key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}>
+                                                
+
+                        <svg width={viewporth} height={viewportw} style={{"border":"1px", "red":"solid"}}>
+
+                            <polygon points="100,10 40,198 190,78 10,78 160,198" style={connectorStyle}/>
                             
-                            // Botch: our sprite md5 can be different from first costume
-                            // iconMd5={dataItem.md5}
-                            iconMd5={(dataItem.json && dataItem.json.costumes[0]) ?
-                                dataItem.json.costumes[0].md5ext : dataItem.md5}
-                            iconRawURL={dataItem.rawURL}
-                            icons={dataItem.json && dataItem.json.costumes}
-                            id={index}
-                            insetIconURL={dataItem.insetIconURL}
-                            internetConnectionRequired={dataItem.internetConnectionRequired}
-                            isPlaying={this.state.playingItem === index}
-                            key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}
-                            name={dataItem.name}
-                            showPlayButton={this.props.showPlayButton}
-                            onMouseEnter={this.handleMouseEnter}
-                            onMouseLeave={this.handleMouseLeave}
-                            onSelect={this.handleSelect}
-                        />
+
+                            <foreignObject  x="46" y="22" width="100" height="200">
+                                
+                                <BotchLifeTreeItem
+                                    bluetoothRequired={dataItem.bluetoothRequired}
+                                    collaborator={dataItem.collaborator}
+                                    description={dataItem.description}
+                                    disabled={dataItem.disabled}
+                                    extensionId={dataItem.extensionId}
+                                    featured={dataItem.featured}
+                                    hidden={dataItem.hidden}
+                                    
+                                    // Botch: our sprite md5 can be different from first costume
+                                    // iconMd5={dataItem.md5}
+                                    iconMd5={(dataItem.json && dataItem.json.costumes[0]) ?
+                                        dataItem.json.costumes[0].md5ext : dataItem.md5}
+                                    iconRawURL={dataItem.rawURL}
+                                    icons={dataItem.json && dataItem.json.costumes}
+                                    id={index}
+                                    insetIconURL={dataItem.insetIconURL}
+                                    internetConnectionRequired={dataItem.internetConnectionRequired}
+                                    isPlaying={this.state.playingItem === index}                                    
+                                    name={dataItem.name}
+                                    showPlayButton={this.props.showPlayButton}
+                                    onMouseEnter={this.handleMouseEnter}
+                                    onMouseLeave={this.handleMouseLeave}
+                                    onSelect={this.handleSelect}
+                                />
+                            </foreignObject>
+                        </svg>
+                        </div>
                     )) : (
                         <div className={styles.spinnerWrapper}>
                             <Spinner

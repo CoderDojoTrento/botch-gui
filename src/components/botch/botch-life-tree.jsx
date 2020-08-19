@@ -159,17 +159,89 @@ class BotchLifeTree extends React.Component {
     setFilteredDataRef (ref) {
         this.filteredDataRef = ref;
     }
-    render () {
+    renderTree (){
         const levels = 3;
 
         const viewporth = 300;
         const viewportw = 300;
-        const deltah = 50
-        const nodeh = 100
+        const deltah = 50;
+        const nodeh = 100;
         const nodew = 150;
-        const levh = deltah*2 + nodeh;
-        const toth = deltah + levh * levels;
-        const connectorStyle = {fill:"lime",stroke:"purple",strokeWidth:5,fillRule:"nonzero"};
+        const levh = (deltah * 2) + nodeh;
+        const toth = deltah + (levh * levels);
+        const connectorStyle = {fill: 'lime', stroke: 'purple', strokeWidth: 5, fillRule: 'nonzero'};
+
+        return (<div
+            className={classNames(styles.libraryScrollGrid, {
+                [styles.withFilterBar]: this.props.filterable || this.props.tags
+            })}
+            ref={this.setFilteredDataRef}
+        >
+            {this.state.loaded ? this.getFilteredData().map((dataItem, index) => (
+                <div key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}>
+                                                
+
+                    <svg
+                        width={viewporth}
+                        height={viewportw}
+                        style={{border: '1px', red: 'solid'}}
+                    >
+
+                        <polygon
+                            points="100,10 40,198 190,78 10,78 160,198"
+                            style={connectorStyle}
+                        />
+                            
+                        <foreignObject
+                            x="46"
+                            y="22"
+                            width="100"
+                            height="200"
+                        >
+                            {this.renderTreeItem(dataItem, index)}
+                        </foreignObject>
+                    </svg>
+                </div>
+            )) : (
+                <div className={styles.spinnerWrapper}>
+                    <Spinner
+                        large
+                        level="primary"
+                    />
+                </div>
+            )}
+        </div>);
+    }
+
+    renderTreeItem (dataItem, index){
+        return (<BotchLifeTreeItem
+            bluetoothRequired={dataItem.bluetoothRequired}
+            collaborator={dataItem.collaborator}
+            description={dataItem.description}
+            disabled={dataItem.disabled}
+            extensionId={dataItem.extensionId}
+            featured={dataItem.featured}
+            hidden={dataItem.hidden}
+            
+            // Botch: our sprite md5 can be different from first costume
+            // iconMd5={dataItem.md5}
+            iconMd5={(dataItem.json && dataItem.json.costumes[0]) ?
+                dataItem.json.costumes[0].md5ext : dataItem.md5}
+            iconRawURL={dataItem.rawURL}
+            icons={dataItem.json && dataItem.json.costumes}
+            id={index}
+            insetIconURL={dataItem.insetIconURL}
+            internetConnectionRequired={dataItem.internetConnectionRequired}
+            isPlaying={this.state.playingItem === index}
+            name={dataItem.name}
+            showPlayButton={this.props.showPlayButton}
+            onMouseEnter={this.handleMouseEnter}
+            onMouseLeave={this.handleMouseLeave}
+            onSelect={this.handleSelect}
+        />);
+    }
+    render () {
+
 
         return (
             /*
@@ -217,60 +289,7 @@ class BotchLifeTree extends React.Component {
                         }
                     </div>
                 )}
-                <div
-                    className={classNames(styles.libraryScrollGrid, {
-                        [styles.withFilterBar]: this.props.filterable || this.props.tags
-                    })}
-                    ref={this.setFilteredDataRef}
-                >
-                    {this.state.loaded ? this.getFilteredData().map((dataItem, index) => (
-                        <div key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}>
-                                                
-
-                        <svg width={viewporth} height={viewportw} style={{"border":"1px", "red":"solid"}}>
-
-                            <polygon points="100,10 40,198 190,78 10,78 160,198" style={connectorStyle}/>
-                            
-
-                            <foreignObject  x="46" y="22" width="100" height="200">
-                                
-                                <BotchLifeTreeItem
-                                    bluetoothRequired={dataItem.bluetoothRequired}
-                                    collaborator={dataItem.collaborator}
-                                    description={dataItem.description}
-                                    disabled={dataItem.disabled}
-                                    extensionId={dataItem.extensionId}
-                                    featured={dataItem.featured}
-                                    hidden={dataItem.hidden}
-                                    
-                                    // Botch: our sprite md5 can be different from first costume
-                                    // iconMd5={dataItem.md5}
-                                    iconMd5={(dataItem.json && dataItem.json.costumes[0]) ?
-                                        dataItem.json.costumes[0].md5ext : dataItem.md5}
-                                    iconRawURL={dataItem.rawURL}
-                                    icons={dataItem.json && dataItem.json.costumes}
-                                    id={index}
-                                    insetIconURL={dataItem.insetIconURL}
-                                    internetConnectionRequired={dataItem.internetConnectionRequired}
-                                    isPlaying={this.state.playingItem === index}                                    
-                                    name={dataItem.name}
-                                    showPlayButton={this.props.showPlayButton}
-                                    onMouseEnter={this.handleMouseEnter}
-                                    onMouseLeave={this.handleMouseLeave}
-                                    onSelect={this.handleSelect}
-                                />
-                            </foreignObject>
-                        </svg>
-                        </div>
-                    )) : (
-                        <div className={styles.spinnerWrapper}>
-                            <Spinner
-                                large
-                                level="primary"
-                            />
-                        </div>
-                    )}
-                </div>
+                {this.renderTree()}
             </div>
         );
     }

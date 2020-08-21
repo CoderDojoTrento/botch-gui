@@ -4,6 +4,7 @@ import bindAll from 'lodash.bindall';
 import Renderer from 'scratch-render';
 import VM from 'scratch-vm';
 import {connect} from 'react-redux';
+import log from '../lib/log.js';
 
 import {defineMessages, intlShape, injectIntl} from 'react-intl';
 
@@ -21,7 +22,6 @@ import {
 import {setRestore} from '../reducers/restore-deletion';
 import {showStandardAlert, closeAlertWithId} from '../reducers/alerts';
 
-import Prova from '../components/aaaa/aaa.jsx'
 
 class OrganismTab extends React.Component {
     constructor (props) {
@@ -30,42 +30,42 @@ class OrganismTab extends React.Component {
         this.showCostume = this.showCostume.bind(this);
         // this.state = {selectedSoundIndex: 0};
   
-        console.log(props);
+        log.log(props);
     }
 
-    getCostume() {
+    getCostume () {
         const target = this.props.editingTarget;
         const iconMd5 = this.props.sprites[target].costume.md5;
         return `https://cdn.assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/`;
     }
 
-    showCostume() {
+    showCostume () {
         const canvas = document.getElementById('orgCanvas');
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = "white";
-        var image = new Image();
-        image.onload = function(){
-            ctx.drawImage(this, 0,0);
-        }
+        ctx.fillStyle = 'white';
+        const image = new Image();
+        image.onload = function (){
+            ctx.drawImage(this, 0, 0);
+        };
         image.src = this.getCostume();
     }
 
-    render() {
-        return( 
+    render () {
+        return (
             <canvas
                 id="orgCanvas"
-                width={400} 
-                height={400} 
+                width={400}
+                height={400}
                 style={{border: '1px solid black', backgroundColor: 'white'}}
-                onClick={this.showCostume}>
-            </canvas>            
+                onClick={this.showCostume}
+            />
         );
     }
 }
 
-{/* <svg width={90} height={90}>       
-    <image xlinkHref={this.getCostume()} width={90} height={90} />    
-</svg> */}
+{ /* <svg width={90} height={90}>
+    <image xlinkHref={this.getCostume()} width={90} height={90} />
+</svg> */ }
 
 OrganismTab.propTypes = {
     dispatchUpdateRestore: PropTypes.func,

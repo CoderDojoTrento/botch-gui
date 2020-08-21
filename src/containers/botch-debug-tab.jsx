@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import bindAll from 'lodash.bindall';
 import VM from 'scratch-vm';
+import log from '../lib/log.js';
 
 import {connect} from 'react-redux';
 
@@ -14,6 +15,7 @@ import randomizeSpritePosition from '../lib/randomize-sprite-position';
 // import spriteTags from '../lib/libraries/sprite-tags';
 
 import BotchLifeTree from '../components/botch/botch-life-tree.jsx';
+
 
 import {
     activateTab,
@@ -73,25 +75,25 @@ class BotchDebugTab extends React.Component {
     }
 
     componentDidMount () {
-        console.log('Botch: botch-debug-tab ComponentDidMount');
+        log.log('Botch: botch-debug-tab ComponentDidMount');
         this.updateSprites();
         this.props.vm.on('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
     }
     componentWillUnmount () {
-        console.log('Botch: botch-debug-tab ComponentWillUnmount');
+        log.log('Botch: botch-debug-tab ComponentWillUnmount');
         this.props.vm.removeListener('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
     }
     
 
     updateSprites (){
         
-        console.log('Botch: botch-debug-tab updateSprites. this=', this);
+        log.log('Botch: botch-debug-tab updateSprites. this=', this);
         if (!window.BOTCH){
-            console.error('Botch extension is not loaded !');
+            log.error('Botch extension is not loaded !');
             return;
         }
         
-        // console.log('this=', this);
+        // log.log('this=', this);
         BOTCH.loadLibrarySprites().then(librarySprites => {
             const names = new Set();
             for (const libSprite of librarySprites){
@@ -109,7 +111,7 @@ class BotchDebugTab extends React.Component {
 
     getTags (){
         if (!window.BOTCH){
-            console.error('Botch extension is not loaded !');
+            log.error('Botch extension is not loaded !');
             return;
         }
         return BOTCH.storageHelper.getAllTags();
@@ -117,20 +119,20 @@ class BotchDebugTab extends React.Component {
 
     handleSelect (index){
         // TODO DOES NOT SHOW ANYTHING !
-        console.log(`Selected tab: ${index}`);
+        log.log(`Selected tab: ${index}`);
     }
 
     handleItemSelect (item) {
         // Randomize position of library sprite
         randomizeSpritePosition(item);
         this.props.vm.addSprite(JSON.stringify(item.json)).then(() => {
-            console.log('Botch: should I do something now ?');
+            log.log('Botch: should I do something now ?');
             // this.props.onActivateBlocksTab();
         });
     }
 
     requestClose (){
-        console.log('Should I do something on close ?');
+        log.log('Should I do something on close ?');
     }
 
     render () {

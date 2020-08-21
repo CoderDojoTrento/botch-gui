@@ -47,17 +47,18 @@ class BotchDebugTab extends React.Component {
         let candidate = name;
         let i = 1;
         while (names.has(candidate)) {
-            const last = name[name.length - 1];
+            const last = candidate[candidate.length - 1];
             
-            if (last >= '0' && last <= '9' && i < 10){
+            if (last >= '0' && last < '9' && i < 10){
                 candidate = candidate.slice(0, candidate.length - 1) + i;
                 i += 1;
             } else {
                 i = 1;
                 const n = (last >= '0' && last <= '9') ? '0' : ' 1';
-                candidate = `${name.slice(0, candidate.length)}${n}`;
+                candidate = `${candidate}${n}`;
             }
         }
+        
         return candidate;
     }
     

@@ -240,6 +240,47 @@ class BotchLifeTree extends React.Component {
             onSelect={this.handleSelect}
         />);
     }
+
+    renderFilter (){
+        return (this.props.filterable || this.props.tags) && (
+            <div className={styles.filterBar}>
+                {this.props.filterable && (
+                    <Filter
+                        className={classNames(
+                            styles.filterBarItem,
+                            styles.filter
+                        )}
+                        filterQuery={this.state.filterQuery}
+                        inputClassName={styles.filterInput}
+                        placeholderText={this.props.intl.formatMessage(messages.filterPlaceholder)}
+                        onChange={this.handleFilterChange}
+                        onClear={this.handleFilterClear}
+                    />
+                )}
+                {this.props.filterable && this.props.tags && (
+                    <Divider className={classNames(styles.filterBarItem, styles.divider)} />
+                )}
+                {this.props.tags &&
+                    <div className={styles.tagWrapper}>
+                        {tagListPrefix.concat(this.props.tags).map((tagProps, id) => (
+                            <TagButton
+                                active={this.state.selectedTag === tagProps.tag.toLowerCase()}
+                                className={classNames(
+                                    styles.filterBarItem,
+                                    styles.tagButton,
+                                    tagProps.className
+                                )}
+                                key={`tag-button-${id}`}
+                                onClick={this.handleTagClick}
+                                {...tagProps}
+                            />
+                        ))}
+                    </div>
+                }
+            </div>
+        );
+    }
+
     render () {
 
 
@@ -252,43 +293,7 @@ class BotchLifeTree extends React.Component {
                 onRequestClose={this.handleClose}
             >*/
             <div>
-                {(this.props.filterable || this.props.tags) && (
-                    <div className={styles.filterBar}>
-                        {this.props.filterable && (
-                            <Filter
-                                className={classNames(
-                                    styles.filterBarItem,
-                                    styles.filter
-                                )}
-                                filterQuery={this.state.filterQuery}
-                                inputClassName={styles.filterInput}
-                                placeholderText={this.props.intl.formatMessage(messages.filterPlaceholder)}
-                                onChange={this.handleFilterChange}
-                                onClear={this.handleFilterClear}
-                            />
-                        )}
-                        {this.props.filterable && this.props.tags && (
-                            <Divider className={classNames(styles.filterBarItem, styles.divider)} />
-                        )}
-                        {this.props.tags &&
-                            <div className={styles.tagWrapper}>
-                                {tagListPrefix.concat(this.props.tags).map((tagProps, id) => (
-                                    <TagButton
-                                        active={this.state.selectedTag === tagProps.tag.toLowerCase()}
-                                        className={classNames(
-                                            styles.filterBarItem,
-                                            styles.tagButton,
-                                            tagProps.className
-                                        )}
-                                        key={`tag-button-${id}`}
-                                        onClick={this.handleTagClick}
-                                        {...tagProps}
-                                    />
-                                ))}
-                            </div>
-                        }
-                    </div>
-                )}
+                
                 {this.renderTree()}
             </div>
         );

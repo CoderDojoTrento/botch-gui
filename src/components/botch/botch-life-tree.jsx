@@ -159,6 +159,7 @@ class BotchLifeTree extends React.Component {
     setFilteredDataRef (ref) {
         this.filteredDataRef = ref;
     }
+
     renderTree (){
         const levels = 3;
 
@@ -171,16 +172,11 @@ class BotchLifeTree extends React.Component {
         const toth = deltah + (levh * levels);
         const connectorStyle = {fill: 'lime', stroke: 'purple', strokeWidth: 5, fillRule: 'nonzero'};
 
-        return (<div
-            className={classNames(styles.libraryScrollGrid, {
-                [styles.withFilterBar]: this.props.filterable || this.props.tags
-            })}
-            ref={this.setFilteredDataRef}
-        >
-            {this.state.loaded ? this.getFilteredData().map((dataItem, index) => (
+
+        return (
+            this.getFilteredData().map((dataItem, index) => (
                 <div key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}>
                                                 
-
                     <svg
                         width={viewporth}
                         height={viewportw}
@@ -202,7 +198,19 @@ class BotchLifeTree extends React.Component {
                         </foreignObject>
                     </svg>
                 </div>
-            )) : (
+            )));
+    }
+
+    renderTreeContainer (){
+        const LOADED = this.renderTree();
+
+        return (<div
+            className={classNames(styles.libraryScrollGrid, {
+                [styles.withFilterBar]: this.props.filterable || this.props.tags
+            })}
+            ref={this.setFilteredDataRef}
+        >
+            {this.state.loaded ? <span>{LOADED}</span> : (
                 <div className={styles.spinnerWrapper}>
                     <Spinner
                         large
@@ -294,7 +302,7 @@ class BotchLifeTree extends React.Component {
             >*/
             <div>
                 
-                {this.renderTree()}
+                {this.renderTreeContainer()}
             </div>
         );
     }

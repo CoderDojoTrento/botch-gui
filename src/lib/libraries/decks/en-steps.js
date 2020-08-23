@@ -2,6 +2,12 @@
 import introMove from './steps/intro-move.en.gif';
 import introSayHello from './steps/intro-say-hello.en.gif';
 
+// Botch
+import createOrg from './steps/botch/create-organism.en.gif';
+import moveOrg from './steps/botch/move-organism.en.gif';
+import setFood from './steps/botch/set-food.en.gif';
+import moreFood from './steps/botch/more-food.en.gif';
+
 // Text to Speech
 import speechAddExtension from './steps/talking-1-add-extension.en.gif';
 import speechSaySomething from './steps/speech-say-something.en.gif';
@@ -202,6 +208,12 @@ const enImages = {
     // Intro
     introMove: introMove,
     introSayHello: introSayHello,
+
+    // Botch
+    createOrg: createOrg,
+    moveOrg: moveOrg,
+    setFood: setFood,
+    moreFood: moreFood,
 
     // Text to Speech
     speechAddExtension: speechAddExtension,

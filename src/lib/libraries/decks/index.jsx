@@ -130,12 +130,30 @@ export default {
         }, {
             title: (
                 <FormattedMessage
-                    defaultMessage="Move the organism"
+                    defaultMessage="Move the organism: use always when I start as a clone"
                     description="Step name for 'Move the organism' step"
                     id="TODO3"
                 />
             ),
             image: 'moveOrg'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Create an enemy"
+                    description="Add enemy"
+                    id="TODO3.1"
+                />
+            ),
+            image: 'setEnemy'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Move the enemy: use always when I start as a clone"
+                    description="Step name for 'Move the enemy' step"
+                    id="TODO3.2"
+                />
+            ),
+            image: 'moveEnemy'
         }, {
             deckIds: [
                 'food-botch',
@@ -149,7 +167,7 @@ export default {
     'food-botch': {
         name: (
             <FormattedMessage
-                defaultMessage="Create a food sprite with Botch"
+                defaultMessage="Create a food or poison sprite with Botch"
                 description="Name for the 'Getting Started' how-to"
                 id="TODO4"
             />
@@ -168,12 +186,21 @@ export default {
         }, {
             title: (
                 <FormattedMessage
-                    defaultMessage="Create more food"
+                    defaultMessage="Create more food, use create clone"
                     description="Step name for 'Create more food' step"
                     id="TODO6"
                 />
             ),
             image: 'moreFood'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Set a sprite as poison"
+                    description="Set food"
+                    id="TODO6.1"
+                />
+            ),
+            image: 'setPoison'
         }, {
             deckIds: [
                 'intro-botch',

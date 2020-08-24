@@ -7,6 +7,9 @@ import createOrg from './steps/botch/create-organism.en.gif';
 import moveOrg from './steps/botch/move-organism.en.gif';
 import setFood from './steps/botch/set-food.en.gif';
 import moreFood from './steps/botch/more-food.en.gif';
+import setPoison from './steps/botch/create-poison.en.gif';
+import setEnemy from './steps/botch/set-enemy.en.gif';
+import moveEnemy from './steps/botch/move-enemy.en.gif';
 
 // Text to Speech
 import speechAddExtension from './steps/talking-1-add-extension.en.gif';
@@ -214,6 +217,9 @@ const enImages = {
     moveOrg: moveOrg,
     setFood: setFood,
     moreFood: moreFood,
+    setPoison: setPoison,
+    setEnemy: setEnemy,
+    moveEnemy: moveEnemy,
 
     // Text to Speech
     speechAddExtension: speechAddExtension,

@@ -6,6 +6,10 @@ import {FormattedMessage} from 'react-intl';
 // Intro
 import libraryIntro from './thumbnails/getting-started.jpg';
 
+// Botch
+import botchIntro from './thumbnails/botch/botch-03.png';
+import botchFood from './thumbnails/botch/food-init.png';
+
 // Text to Speech
 import libraryTXTSpeech from './thumbnails/text-to-speech.jpg';
 
@@ -102,6 +106,109 @@ export default {
         }
         ],
         urlId: 'getStarted'
+    },
+
+    'intro-botch': {
+        name: (
+            <FormattedMessage
+                defaultMessage="Getting Started with Botch"
+                description="Name for the 'Getting Started' how-to"
+                id="TODO"
+            />
+        ),
+        tags: ['help', 'stuck', 'how', 'can', 'say'],
+        img: botchIntro,
+        steps: [{
+            title: (
+                <FormattedMessage
+                    defaultMessage="Create an organism"
+                    description="Add an organism"
+                    id="TODO2"
+                />
+            ),
+            image: 'createOrg'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Move the organism: use always when I start as a clone"
+                    description="Step name for 'Move the organism' step"
+                    id="TODO3"
+                />
+            ),
+            image: 'moveOrg'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Create an enemy"
+                    description="Add enemy"
+                    id="TODO3.1"
+                />
+            ),
+            image: 'setEnemy'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Move the enemy: use always when I start as a clone"
+                    description="Step name for 'Move the enemy' step"
+                    id="TODO3.2"
+                />
+            ),
+            image: 'moveEnemy'
+        }, {
+            deckIds: [
+                'food-botch',
+                'add-sprite'
+            ]
+        }
+        ],
+        urlId: 'orgInit'
+    },
+
+    'food-botch': {
+        name: (
+            <FormattedMessage
+                defaultMessage="Create a food or poison sprite with Botch"
+                description="Name for the 'Getting Started' how-to"
+                id="TODO4"
+            />
+        ),
+        tags: ['help', 'stuck', 'how', 'can', 'say'],
+        img: botchFood,
+        steps: [{
+            title: (
+                <FormattedMessage
+                    defaultMessage="Set a sprite as food"
+                    description="Set food"
+                    id="TODO5"
+                />
+            ),
+            image: 'setFood'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Create more food, use create clone"
+                    description="Step name for 'Create more food' step"
+                    id="TODO6"
+                />
+            ),
+            image: 'moreFood'
+        }, {
+            title: (
+                <FormattedMessage
+                    defaultMessage="Set a sprite as poison"
+                    description="Set food"
+                    id="TODO6.1"
+                />
+            ),
+            image: 'setPoison'
+        }, {
+            deckIds: [
+                'intro-botch',
+                'add-sprite'
+            ]
+        }
+        ],
+        urlId: 'createFood'
     },
 
     'imagine': {

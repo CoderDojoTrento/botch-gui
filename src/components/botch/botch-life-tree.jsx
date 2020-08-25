@@ -43,7 +43,18 @@ class BotchLifeTree extends React.Component {
             'handleTagClick',
             'setFilteredDataRef'
         ]);
+        const vp = { // occupied screen
+            width: 500,
+            height: 500};
+
         this.state = {
+            viewport: vp,
+    
+            viewBox: {
+                x: -vp.width / 2,
+                y: 0,
+                width: vp.width,
+                height: vp.height},
             playingItem: null,
             filterQuery: '',
             selectedTag: ALL_TAG.tag,
@@ -160,45 +171,53 @@ class BotchLifeTree extends React.Component {
         this.filteredDataRef = ref;
     }
 
+    getViewBox (){
+        const vb = this.state.viewBox;
+        return [vb.x, vb.y, vb.width, vb.height].join(' ');
+    }
     renderTree (){
         const levels = 3;
+        
 
-        const viewporth = 300;
-        const viewportw = 300;
-        const deltah = 50;
-        const nodeh = 100;
-        const nodew = 150;
+        const deltah = 25;
+        const nodeh = 150;
+        const nodew = 100;
         const levh = (deltah * 2) + nodeh;
         const toth = deltah + (levh * levels);
         const connectorStyle = {fill: 'lime', stroke: 'purple', strokeWidth: 5, fillRule: 'nonzero'};
 
-
+        const vp = this.state.viewport;
+        
         return (
-            this.getFilteredData().map((dataItem, index) => (
-                <div key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}>
-                                                
-                    <svg
-                        width={viewporth}
-                        height={viewportw}
-                        style={{border: '1px', red: 'solid'}}
-                    >
+            <svg
+                width={vp.width}
+                height={vp.height}
+                viewBox={this.getViewBox()}
 
+                style={{border: '1px', red: 'solid'}}
+            >
+                {this.getFilteredData().map((dataItem, index) => (
+                    <g
+                        transform={`translate(${-nodeh / 2},${vp.height - (levh * (index + 1))})`}
+                        key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}
+                    >
+                                                                        
                         <polygon
                             points="100,10 40,198 190,78 10,78 160,198"
                             style={connectorStyle}
                         />
-                            
+                                
                         <foreignObject
-                            x="46"
-                            y="22"
-                            width="100"
-                            height="200"
+                            
+                            width={nodew}
+                            height={nodeh}
                         >
                             {this.renderTreeItem(dataItem, index)}
                         </foreignObject>
-                    </svg>
-                </div>
-            )));
+                        
+                    </g>))}
+            </svg>
+        );
     }
 
     renderTreeContainer (){

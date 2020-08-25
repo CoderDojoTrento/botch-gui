@@ -511,30 +511,30 @@ class MenuBar extends React.Component {
                             (this.props.isShowingProject || this.props.isUpdating) && (
                                 <ProjectWatcher onDoneUpdating={this.props.onSeeCommunity}>
                                     {
-                                        waitForUpdate => (
+                                        /* waitForUpdate => (
                                             <ShareButton
                                                 className={styles.menuBarButton}
                                                 isShared={this.props.isShared}
-                                                /* eslint-disable react/jsx-no-bind */
+
                                                 onClick={() => {
                                                     this.handleClickShare(waitForUpdate);
                                                 }}
-                                                /* eslint-enable react/jsx-no-bind */
+
                                             />
-                                        )
+                                        ) */
                                     }
                                 </ProjectWatcher>
                             )
                         ) : (
                             this.props.showComingSoon ? (
                                 <MenuBarItemTooltip id="share-button">
-                                    <ShareButton className={styles.menuBarButton} />
+                                    {/* <ShareButton className={styles.menuBarButton} /> */}
                                 </MenuBarItemTooltip>
                             ) : []
                         )}
                         {this.props.canRemix ? remixButton : []}
                     </div>
-                    <div className={classNames(styles.menuBarItem, styles.communityButtonWrapper)}>
+                    {/* <div className={classNames(styles.menuBarItem, styles.communityButtonWrapper)}>
                         {this.props.enableCommunity ? (
                             (this.props.isShowingProject || this.props.isUpdating) && (
                                 <ProjectWatcher onDoneUpdating={this.props.onSeeCommunity}>
@@ -542,11 +542,11 @@ class MenuBar extends React.Component {
                                         waitForUpdate => (
                                             <CommunityButton
                                                 className={styles.menuBarButton}
-                                                /* eslint-disable react/jsx-no-bind */
+                                                
                                                 onClick={() => {
                                                     this.handleClickSeeCommunity(waitForUpdate);
                                                 }}
-                                                /* eslint-enable react/jsx-no-bind */
+                                                
                                             />
                                         )
                                     }
@@ -557,11 +557,11 @@ class MenuBar extends React.Component {
                                 <CommunityButton className={styles.menuBarButton} />
                             </MenuBarItemTooltip>
                         ) : [])}
-                    </div>
+                    </div> */}
                 </div>
 
-                {/* show the proper UI in the account menu, given whether the user is
-                logged in, and whether a session is available to log in with */}
+                {/* * show the proper UI in the account menu, given whether the user is
+                logged in, and whether a session is available to log in with *}
                 <div className={styles.accountInfoGroup}>
                     <div className={styles.menuBarItem}>
                         {this.props.canSave && (
@@ -688,7 +688,7 @@ class MenuBar extends React.Component {
                             ) : []}
                         </React.Fragment>
                     )}
-                </div>
+                </div> */}
             </Box>
         );
     }

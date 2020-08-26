@@ -1,18 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import bindAll from 'lodash.bindall';
-import Renderer from 'scratch-render';
 import VM from 'scratch-vm';
 import {connect} from 'react-redux';
 import log from '../lib/log.js';
+import {injectIntl, intlShape} from 'react-intl';
 
-import {defineMessages, intlShape, injectIntl} from 'react-intl';
 
-
-import {handleFileUpload} from '../lib/file-uploader.js';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
-import DragConstants from '../lib/drag-constants';
-import downloadBlob from '../lib/download-blob';
 
 import {
     activateTab,
@@ -63,9 +57,6 @@ class OrganismTab extends React.Component {
     }
 }
 
-{ /* <svg width={90} height={90}>
-    <image xlinkHref={this.getCostume()} width={90} height={90} />
-</svg> */ }
 
 OrganismTab.propTypes = {
     dispatchUpdateRestore: PropTypes.func,
@@ -97,16 +88,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
-    onNewSoundFromLibraryClick: e => {
-        e.preventDefault();
-        dispatch(openSoundLibrary());
-    },
-    onNewSoundFromRecordingClick: () => {
-        dispatch(openSoundRecorder());
-    },
-    onRequestCloseSoundLibrary: () => {
-        dispatch(closeSoundLibrary());
-    },
+    
     dispatchUpdateRestore: restoreState => {
         dispatch(setRestore(restoreState));
     },

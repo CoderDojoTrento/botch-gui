@@ -11,6 +11,7 @@ import Spinner from '../spinner/spinner.jsx';
 
 import styles from './botch-life-tree.css';
 import BotchLifeTreeItem from './botch-life-tree-item.jsx';
+import log from '../../lib/log.js';
 
 const messages = defineMessages({
     filterPlaceholder: {
@@ -30,6 +31,8 @@ const tagListPrefix = [ALL_TAG];
 
 
 class BotchLifeTree extends React.Component {
+
+    
     constructor (props) {
         super(props);
         bindAll(this, [
@@ -58,7 +61,8 @@ class BotchLifeTree extends React.Component {
             playingItem: null,
             filterQuery: '',
             selectedTag: ALL_TAG.tag,
-            loaded: false
+            loaded: false,
+            layout: BotchLifeTree.calculateLayout(props.data)
         };
     }
     componentDidMount () {
@@ -139,6 +143,9 @@ class BotchLifeTree extends React.Component {
         this.setState({filterQuery: ''});
     }
     getFilteredData () {
+        log.log('Botch TODO, not actually filtering anything !');
+        return this.props.data;
+        /*
         if (this.state.selectedTag === 'all') {
             if (!this.state.filterQuery) {
                 return this.props.data;
@@ -163,7 +170,9 @@ class BotchLifeTree extends React.Component {
                 .map(String.prototype.toLowerCase.call, String.prototype.toLowerCase)
                 .indexOf(this.state.selectedTag) !== -1
         ));
+        */
     }
+    
     scrollToTop () {
         this.filteredDataRef.scrollTop = 0;
     }
@@ -324,6 +333,71 @@ class BotchLifeTree extends React.Component {
                 {this.renderTreeContainer()}
             </div>
         );
+    }
+
+    initLayout (libSprites){
+        
+        const layout = {};
+        for (const libSprite of libSprites){
+            if (libSprite.md5 in layout){
+                for (const key in libSprite){
+                    layout[libSprite.md5][key] = libSprite[key];
+                }
+            } else {
+                layout[libSprite.md5] = libSprite;
+                libSprite.children = [];
+            }
+                        
+            if (!(libSprite.parentId in layout)){
+                layout[libSprite.parentId] = {
+                    children: []
+                };
+            }
+            layout[libSprite.parentId].children.push(libSprite);
+        }
+        
+        const stack = [layout.parent_0];
+        const p0 = layout.parent_0;
+        p0.generation = 0;
+        p0.expanded = true;
+        p0.visible = true;
+        p0.x = -vp.width / 2;
+        p0.y = vp.height - 100;
+
+        while (stack.length !== 0){
+            const node = stack.pop();
+            for (const child of node.children){
+                if (node.expanded){
+                    child.visible = true;
+                } else {
+                    child.visible = false;
+                }
+                child.generation = node.generation + 1;
+                stack.push(child);
+            }
+        }
+        return layout;
+    }
+    
+    /**
+     * Recalculates layout according to 'expanded' fields
+     * @since botch 0.2
+     */
+    updateLayout (){
+        
+        const ret = {parent_0: {
+            expanded: true
+            
+        }};
+
+        const stack = [treelayout.parent_0];
+        while (stack.length !== 0){
+            const node = stack.pop();
+            for (const child of node.children){
+                child.y =
+                stack.push(child);
+            }
+        }
     }
 }
 

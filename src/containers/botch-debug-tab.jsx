@@ -64,6 +64,39 @@ class BotchDebugTab extends React.Component {
         return candidate;
     }
     
+    static libSpritesToTreeRegistry (libSprites){
+        
+        const registry = {};
+        for (const libSprite of libSprites){
+            if (libSprite.md5 in registry){
+                for (const key in libSprite){
+                    registry[libSprite.md5][key] = libSprite[key];
+                }
+            } else {
+                registry[libSprite.md5] = libSprite;
+                libSprite.children = [];
+            }
+                        
+            if (!(libSprite.parentId in registry)){
+                registry[libSprite.parentId] = {
+                    children: []
+                };
+            }
+            registry[libSprite.parentId].children.push(libSprite);
+        }
+        
+        const stack = [registry.parent_0];
+        registry.parent_0.generation = 0;
+        while (stack.length !== 0){
+            const node = stack.pop();
+            for (const child of node.children){
+                child.generation = node.generation + 1;
+                stack.push(child);
+            }
+        }
+        return registry;
+    }
+
     constructor (props) {
         super(props);
         bindAll(this, [
@@ -71,7 +104,7 @@ class BotchDebugTab extends React.Component {
             'updateSprites'
         ]);
 
-        this.state = {librarySprites: []};
+        this.state = {treeRegistry: {}};
     }
 
     componentDidMount () {
@@ -94,9 +127,9 @@ class BotchDebugTab extends React.Component {
         }
         
         // log.log('this=', this);
-        BOTCH.loadLibrarySprites().then(librarySprites => {
+        BOTCH.loadLibrarySprites().then(libSprites => {
             const names = new Set();
-            for (const libSprite of librarySprites){
+            for (const libSprite of libSprites){
                 const candidate = BotchDebugTab.findNewName(libSprite.name, names);
                 libSprite.name = candidate;
                 libSprite.json.name = candidate;
@@ -104,10 +137,11 @@ class BotchDebugTab extends React.Component {
                 names.add(candidate);
             }
             
-            this.setState({librarySprites: librarySprites});
+            this.setState({treeRegistry: BotchDebugTab.libSpritesToTreeRegistry(libSprites)});
         });
 
     }
+
 
     getTags (){
         if (!window.BOTCH){
@@ -138,7 +172,7 @@ class BotchDebugTab extends React.Component {
     render () {
         
         return (<BotchLifeTree
-            data={this.state.librarySprites}
+            data={this.state.treeRegistry}
             id="botchLifeTree"
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}

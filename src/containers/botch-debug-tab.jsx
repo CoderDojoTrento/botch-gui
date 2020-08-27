@@ -64,38 +64,6 @@ class BotchDebugTab extends React.Component {
         return candidate;
     }
     
-    static libSpritesToTreeRegistry (libSprites){
-        
-        const registry = {};
-        for (const libSprite of libSprites){
-            if (libSprite.md5 in registry){
-                for (const key in libSprite){
-                    registry[libSprite.md5][key] = libSprite[key];
-                }
-            } else {
-                registry[libSprite.md5] = libSprite;
-                libSprite.children = [];
-            }
-                        
-            if (!(libSprite.parentId in registry)){
-                registry[libSprite.parentId] = {
-                    children: []
-                };
-            }
-            registry[libSprite.parentId].children.push(libSprite);
-        }
-        
-        const stack = [registry.parent_0];
-        registry.parent_0.generation = 0;
-        while (stack.length !== 0){
-            const node = stack.pop();
-            for (const child of node.children){
-                child.generation = node.generation + 1;
-                stack.push(child);
-            }
-        }
-        return registry;
-    }
 
     constructor (props) {
         super(props);
@@ -104,7 +72,7 @@ class BotchDebugTab extends React.Component {
             'updateSprites'
         ]);
 
-        this.state = {treeRegistry: {}};
+        this.state = {libSprites: []};
     }
 
     componentDidMount () {
@@ -136,8 +104,8 @@ class BotchDebugTab extends React.Component {
                 libSprite.json.objName = candidate;
                 names.add(candidate);
             }
-            
-            this.setState({treeRegistry: BotchDebugTab.libSpritesToTreeRegistry(libSprites)});
+            log.log('Setting state:', libSprites);
+            this.setState({libSprites: libSprites});
         });
 
     }
@@ -172,7 +140,7 @@ class BotchDebugTab extends React.Component {
     render () {
         
         return (<BotchLifeTree
-            data={this.state.treeRegistry}
+            data={this.state.libSprites}
             id="botchLifeTree"
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}

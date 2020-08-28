@@ -36,6 +36,122 @@ const messages = defineMessages({
 /* global BOTCH */
 
 class BotchDebugTab extends React.Component {
+
+
+    /**
+     *
+     *
+     * @param {*} state pass state so linter does not complain
+     * @since botch-0.2
+     */
+    static calcLayout (viz, libSprites){
+        
+        const vp = viz.viewport;
+        const m = viz.measures;
+
+        const layout = {};
+        
+
+        // fictitious node, outside viewport on purpose
+        const p0 = {};
+        
+        p0.generation = 0;
+        p0.children = [];
+        p0.md5 = 'parent_0';
+        p0.parentId = ''; // very special case
+        p0.expanded = true;
+        p0.visible = false;
+        p0.x = -vp.width / 2;
+        p0.y = vp.height + m.deltah + (m.nodeh / 2);
+        p0.xoff = p0.x - (m.nodew / 2);
+        p0.yoff = p0.y - (m.nodeh / 2);
+        layout.parent_0 = p0;
+
+        if (!libSprites){
+            return;
+        }
+
+        for (const libSprite of libSprites){
+
+            if (!(libSprite.md5 in layout)){
+                layout[libSprite.md5] = {
+                    children: []
+                };
+            }
+            const laySprite = layout[libSprite.md5];
+
+            for (const key in libSprite){
+                laySprite[key] = libSprite[key];
+            }
+
+            if (!libSprite.parentId){ // for copy-pasted default scratch sprites
+                laySprite.parentId = 'parent_0';
+            }
+                                    
+            if (!(laySprite.parentId in layout)){
+                layout[laySprite.parentId] = {
+                    children: []
+                };
+            }
+            layout[laySprite.parentId].children.push(laySprite);
+        }
+        
+        log.log('Botch: libSprites', libSprites);
+        log.log('Botch: layout =', layout);
+        const stack1 = [layout.parent_0];
+        
+
+        const generations = [1];
+
+        while (stack1.length !== 0){
+            const node = stack1.pop();
+            log.log('node = ', node);
+
+            if (node.generation + 1 < generations.length){
+                generations[node.generation + 1] += node.children.length;
+            } else if (node.children.length > 0){
+                generations.push(node.children.length);
+            }
+            for (const child of node.children){
+                if (node.expanded){
+                    child.visible = true;
+                } else {
+                    child.visible = false;
+                }
+                child.generation = node.generation + 1;
+                
+                stack1.push(child);
+            }
+        }
+
+        const queue = [p0];
+        let curGen = 0;
+        let i = 0;
+        m.toth = ((generations.length - 1) * m.levh) + m.nodeh;
+        log.log('measures=', m);
+        log.log('generations=', generations);
+        while (queue.length > 0){
+            const node = queue.shift();
+            if (node.generation > curGen){
+                curGen = node.generation;
+                i = 0;
+            } else {
+                i += 1;
+            }
+            if (node.generation > 0){
+                const levw = generations[node.generation] * (m.nodew + (m.deltaw * 2));
+                node.x = (-levw / 2) + ((m.nodew + (m.deltaw * 2)) * i) - (m.nodew / 2) - m.deltaw;
+                node.xoff = node.x - (m.nodew / 2);
+                node.y = vp.height - (m.nodeh + (m.levh * (curGen - 1)) - (m.nodeh / 2));
+                node.yoff = node.y - (m.nodeh / 2);
+            }
+            for (const child of node.children){
+                queue.push(child);
+            }
+            
+        }
+        return layout;
+    }
     /**
      * Given a name and a list of existing names, if name is in the list
      * generates a new name appending numbers to it.
@@ -72,7 +188,34 @@ class BotchDebugTab extends React.Component {
             'updateSprites'
         ]);
 
-        this.state = {libSprites: []};
+        const viz = {};
+        const vp = { // occupied screen
+            width: 500,
+            height: 500};
+
+        viz.viewport = vp;
+    
+        viz.viewBox = {
+            x: -vp.width / 2,
+            y: 0,
+            width: vp.width,
+            height: vp.height
+        };
+
+        viz.measures = {
+            deltah: 15,
+            deltaw: 25,
+            nodeh: 150,
+            nodew: 100
+        };
+        const m = viz.measures;
+        
+        m.levh = (m.deltah * 2) + m.nodeh;
+
+        this.state = {
+            libSprites: [],
+            layout: {},
+            viz: viz};
     }
 
     componentDidMount () {
@@ -105,7 +248,9 @@ class BotchDebugTab extends React.Component {
                 names.add(candidate);
             }
             log.log('Setting state:', libSprites);
-            this.setState({libSprites: libSprites});
+            this.setState({
+                libSprites: libSprites,
+                layout: BotchDebugTab.calcLayout(this.state.viz, libSprites)});
         });
 
     }
@@ -120,7 +265,7 @@ class BotchDebugTab extends React.Component {
     }
 
     handleSelect (index){
-        // TODO DOES NOT SHOW ANYTHING !
+        // TO DO DOES NOT SHOW ANYTHING !
         log.log(`Selected tab: ${index}`);
     }
 
@@ -137,10 +282,12 @@ class BotchDebugTab extends React.Component {
         log.log('Should I do something on close ?');
     }
 
+
     render () {
         
         return (<BotchLifeTree
-            data={this.state.libSprites}
+            layout={this.state.layout}
+            viz={this.state.viz}
             id="botchLifeTree"
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}

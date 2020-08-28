@@ -53,14 +53,11 @@ class BotchLifeTree extends React.Component {
             selectedTag: ALL_TAG.tag,
             loaded: false
         };
-        this.initLayout(this.state);
     }
     componentDidMount () {
         // Allow the spinner to display before loading the content
         setTimeout(() => {
-            const s = {loaded: true};
-            this.initLayout(s);
-            this.setState(s);
+            this.setState({loaded: true});
             
         });
         if (this.props.setStopHandler) this.props.setStopHandler(this.handlePlayingEnd);
@@ -73,7 +70,7 @@ class BotchLifeTree extends React.Component {
     }
     handleSelect (id) {
         this.handleClose();
-        this.props.onItemSelected(this.getFilteredData()[id]);
+        this.props.onItemSelected(this.getFilteredLayout()[id]);
     }
     handleClose () {
         
@@ -96,7 +93,7 @@ class BotchLifeTree extends React.Component {
     handleMouseEnter (id) {
         // don't restart if mouse over already playing item
         if (this.props.onItemMouseEnter && this.state.playingItem !== id) {
-            this.props.onItemMouseEnter(this.getFilteredData()[id]);
+            this.props.onItemMouseEnter(this.getFilteredLayout()[id]);
             this.setState({
                 playingItem: id
             });
@@ -104,7 +101,7 @@ class BotchLifeTree extends React.Component {
     }
     handleMouseLeave (id) {
         if (this.props.onItemMouseLeave) {
-            this.props.onItemMouseLeave(this.getFilteredData()[id]);
+            this.props.onItemMouseLeave(this.getFilteredLayout()[id]);
             this.setState({
                 playingItem: null
             });
@@ -124,7 +121,7 @@ class BotchLifeTree extends React.Component {
                 selectedTag: ALL_TAG.tag
             });
         } else {
-            this.props.onItemMouseLeave(this.getFilteredData()[this.state.playingItem]);
+            this.props.onItemMouseLeave(this.getFilteredLayout()[this.state.playingItem]);
             this.setState({
                 filterQuery: event.target.value,
                 playingItem: null,
@@ -137,7 +134,7 @@ class BotchLifeTree extends React.Component {
     }
     getFilteredLayout () {
         log.log('Botch TODO, not actually filtering anything !');
-        return this.state.layout;
+        return this.props.layout;
         /*
         if (this.state.selectedTag === 'all') {
             if (!this.state.filterQuery) {
@@ -174,18 +171,19 @@ class BotchLifeTree extends React.Component {
     }
 
     getViewBox (){
-        const vb = this.state.viewBox;
+        const vb = this.props.viz.viewBox;
         return [vb.x, vb.y, vb.width, vb.height].join(' ');
     }
     renderTree (){
 
         const connectorStyle = {fill: 'lime', stroke: 'purple', strokeWidth: 5, fillRule: 'nonzero'};
 
-        const vp = this.state.viewport;
-        const m = this.state.measures;
+        const vp = this.props.viz.viewport;
+        const m = this.props.viz.measures;
         
         const fl = this.getFilteredLayout();
-
+        log.log('filtered layout =', fl);
+        
         return (
             <svg
                 width={vp.width}
@@ -194,25 +192,27 @@ class BotchLifeTree extends React.Component {
 
                 style={{border: '1px', red: 'solid'}}
             >
-                {Object.keys(fl).forEach(key => (
-                    <g
-                        transform={`translate(${fl[key].xoff},${fl[key].yoff})`}
-                        key={typeof fl[key].name === 'string' ? fl[key].name : fl[key].rawURL}
-                    >
-                                                                        
-                        <polygon
-                            points="100,10 40,198 190,78 10,78 160,198"
-                            style={connectorStyle}
-                        />
-                                
-                        <foreignObject
-                            width={m.nodew}
-                            height={m.nodeh}
+                {Object.keys(fl).filter(key => key !== 'parent_0')
+                    .map(key => (
+                    
+                        <g
+                            transform={`translate(${fl[key].xoff},${fl[key].yoff})`}
+                            key={typeof fl[key].name === 'string' ? fl[key].name : fl[key].rawURL}
                         >
-                            {this.renderTreeItem(fl[key])}
-                        </foreignObject>
+                                                                        
+                            <polygon
+                                points="100,10 40,198 190,78 10,78 160,198"
+                                style={connectorStyle}
+                            />
+                                
+                            <foreignObject
+                                width={m.nodew}
+                                height={m.nodeh}
+                            >
+                                {this.renderTreeItem(fl[key])}
+                            </foreignObject>
                         
-                    </g>))}
+                        </g>))}
             </svg>
         );
     }
@@ -306,133 +306,6 @@ class BotchLifeTree extends React.Component {
     }
 
 
-    /**
-     *
-     *
-     * @param {*} state pass state so linter does not complain
-     * @since botch-0.2
-     */
-    initLayout (state){
-
-        const vp = { // occupied screen
-            width: 500,
-            height: 500};
-
-        state.viewport = vp;
-    
-        state.viewBox = {
-            x: -vp.width / 2,
-            y: 0,
-            width: vp.width,
-            height: vp.height
-        };
-
-        state.measures = {
-            deltah: 15,
-            deltaw: 25,
-            nodeh: 150,
-            nodew: 100
-        };
-        const m = state.measures;
-        
-        m.levh = (m.deltah * 2) + m.nodeh;
-
-        const layout = {};
-        
-
-        // fictitious node, outside viewport on purpose
-        const p0 = {};
-        
-        p0.generation = 0;
-        p0.children = [];
-        p0.md5 = 'parent_0';
-        p0.parentId = ''; // very special case
-        p0.expanded = true;
-        p0.visible = false;
-        p0.x = -vp.width / 2;
-        p0.y = vp.height + m.deltah + (m.nodeh / 2);
-        p0.xoff = p0.x - (m.nodew / 2);
-        p0.yoff = p0.y - (m.nodeh / 2);
-        layout.parent_0 = p0;
-        state.layout = layout;
-
-        if (!this.props.data){
-            return;
-        }
-
-        for (const libSprite of this.props.data){
-
-            if (!(libSprite.md5 in layout)){
-                layout[libSprite.md5] = {
-                    children: []
-                };
-            }
-            const laySprite = layout[libSprite.md5];
-
-            for (const key in libSprite){
-                laySprite[key] = libSprite[key];
-            }
-
-            if (!libSprite.parentId){ // for copy-pasted default scratch sprites
-                laySprite.parentId = 'parent_0';
-            }
-                                    
-            if (!(laySprite.parentId in layout)){
-                layout[laySprite.parentId] = {
-                    children: []
-                };
-            }
-            layout[laySprite.parentId].children.push(laySprite);
-        }
-        
-        log.log('Botch: this.props.data', this.props.data);
-        log.log('Botch: layout =', layout);
-        const stack1 = [layout.parent_0];
-        
-
-        const generations = [1];
-
-        while (stack1.length !== 0){
-            const node = stack1.pop();
-            log.log('node = ', node);
-            for (const child of node.children){
-                if (node.expanded){
-                    child.visible = true;
-                } else {
-                    child.visible = false;
-                }
-                if (node.generation + 1 < generations.length){
-                    generations[node.generation + 1] += node.children.length;
-                } else {
-                    generations.push(node.children.length);
-                }
-                child.generation = node.generation + 1;
-                
-                stack1.push(child);
-            }
-        }
-
-        const queue = [p0];
-        let curGen = 0;
-        let i = 0;
-        m.toth = ((generations.length - 1) * m.levh) + m.nodeh;
-        while (queue.length !== 0){
-            const node = queue.shift();
-            if (node.generation > curGen){
-                curGen = node.generation;
-                i = 0;
-            }
-            const levw = generations[node.generation] * (m.nodew + (m.deltaw * 2));
-            node.x = (-levw / 2) + ((m.nodew + (m.deltaw * 2)) * i) - (m.nodew / 2);
-            node.xoff = node.x - (m.nodew / 2);
-            node.y = m.toth - m.nodeh - (m.levh * curGen) + (m.nodeh / 2);
-            node.yoff = node.y - (m.nodeh / 2);
-        }
-
-        
-    }
-
-
     render () {
         return (
         /*
@@ -450,20 +323,8 @@ class BotchLifeTree extends React.Component {
 }
 
 BotchLifeTree.propTypes = {
-    data: PropTypes.arrayOf(
-        /* eslint-disable react/no-unused-prop-types, lines-around-comment */
-        // An item in the library
-        PropTypes.shape({
-            // @to do remove md5/rawURL prop from library, refactor to use storage
-            md5: PropTypes.string,
-            name: PropTypes.oneOfType([
-                PropTypes.string,
-                PropTypes.node
-            ]),
-            rawURL: PropTypes.string
-        })
-        /* eslint-enable react/no-unused-prop-types, lines-around-comment */
-    ),
+    layout: PropTypes.any.isRequired,
+    viz: PropTypes.object.isRequired,
     filterable: PropTypes.bool,
     id: PropTypes.string.isRequired,
     intl: intlShape.isRequired,

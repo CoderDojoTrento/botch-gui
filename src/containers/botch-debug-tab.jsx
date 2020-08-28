@@ -38,6 +38,35 @@ const messages = defineMessages({
 class BotchDebugTab extends React.Component {
 
 
+    static updateFrontierLayout (viz, layout, generation, genNum){
+        if (genNum === 0){
+            return;
+        }
+        const vp = viz.viewport;
+        const m = viz.measures;
+        // TO DO
+        const midIndex = generation.length; // Math.floor(generation.length / 2);
+        for (const nodeGroup of generation.slice(0, midIndex)){
+            /*   x   x   x   x
+                       |
+            */
+            const px = layout[nodeGroup[0].parentId].x;
+            
+            const groupw = (m.nodeh * nodeGroup.length) + (m.deltah * 2 * (nodeGroup.length - 1));
+            
+            for (let i = 0; i < nodeGroup.length; i++){
+                const frontierNode = nodeGroup[i];
+                // |____|-|-|____|-|-|____|-|-|
+                //    |        |        |
+                frontierNode.x = px - (groupw / 2) + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
+                frontierNode.xoff = frontierNode.x - (m.nodew / 2);
+                frontierNode.y = vp.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
+                frontierNode.yoff = frontierNode.y - (m.nodeh / 2);
+            }
+            
+        }
+    }
+
     /**
      *
      *
@@ -61,7 +90,7 @@ class BotchDebugTab extends React.Component {
         p0.parentId = ''; // very special case
         p0.expanded = true;
         p0.visible = false;
-        p0.x = -vp.width / 2;
+        p0.x = 0;
         p0.y = vp.height + m.deltah + (m.nodeh / 2);
         p0.xoff = p0.x - (m.nodew / 2);
         p0.yoff = p0.y - (m.nodeh / 2);
@@ -98,58 +127,46 @@ class BotchDebugTab extends React.Component {
         
         log.log('Botch: libSprites', libSprites);
         log.log('Botch: layout =', layout);
-        const stack1 = [layout.parent_0];
-        
-
-        const generations = [1];
-
-        while (stack1.length !== 0){
-            const node = stack1.pop();
-            log.log('node = ', node);
-
-            if (node.generation + 1 < generations.length){
-                generations[node.generation + 1] += node.children.length;
-            } else if (node.children.length > 0){
-                generations.push(node.children.length);
-            }
-            for (const child of node.children){
-                if (node.expanded){
-                    child.visible = true;
-                } else {
-                    child.visible = false;
-                }
-                child.generation = node.generation + 1;
-                
-                stack1.push(child);
-            }
-        }
+        log.log('measures=', m);
 
         const queue = [p0];
-        let curGen = 0;
-        let i = 0;
-        m.toth = ((generations.length - 1) * m.levh) + m.nodeh;
-        log.log('measures=', m);
-        log.log('generations=', generations);
+        let genNum = 0;
+        
+        let generation = [[]];
+        const generations = [];
+        let curParentId = '';
+
         while (queue.length > 0){
             const node = queue.shift();
-            if (node.generation > curGen){
-                curGen = node.generation;
-                i = 0;
-            } else {
-                i += 1;
-            }
-            if (node.generation > 0){
-                const levw = generations[node.generation] * (m.nodew + (m.deltaw * 2));
-                node.x = (-levw / 2) + ((m.nodew + (m.deltaw * 2)) * i) - (m.nodew / 2) - m.deltaw;
-                node.xoff = node.x - (m.nodew / 2);
-                node.y = vp.height - (m.nodeh + (m.levh * (curGen - 1)) - (m.nodeh / 2));
-                node.yoff = node.y - (m.nodeh / 2);
-            }
             for (const child of node.children){
                 queue.push(child);
+                child.visible = true;
+                child.generation = node.generation + 1;
             }
+
+            if (node.generation > genNum){
+                generations.push(generation);
+                generation = [[node]];
+            } else if (node.parentId === curParentId){
+                generation[generation.length - 1].push(node);
+            } else {
+                generation.push([node]);
+            }
+
+            if (queue.length === 0){
+                generations.push(generation);
+            }
+            genNum = node.generation;
+            curParentId = node.parentId;
             
         }
+        
+        log.log('generations=', generations);
+
+        for (let i = 0; i < generations.length; i++){
+            BotchDebugTab.updateFrontierLayout(viz, layout, generations[i], i);
+        }
+        log.log('final layout=', layout);
         return layout;
     }
     /**

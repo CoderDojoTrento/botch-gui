@@ -25,6 +25,8 @@ import {
 import {setRestore} from '../reducers/restore-deletion';
 import {showStandardAlert, closeAlertWithId} from '../reducers/alerts';
 
+/* global BOTCH */
+
 const messages = defineMessages({
     libraryTitle: {
         defaultMessage: 'Choose a Sprite',
@@ -33,11 +35,41 @@ const messages = defineMessages({
     }
 });
 
-/* global BOTCH */
 
 class BotchDebugTab extends React.Component {
 
+    /**
+     * Calculates the layed out node group total width.
+     * @param {array} nodeGroup list of nodes
+     * @param {object} measures the measures
+     * @returns {int} the width of the layed out node group.
+     * @since botch-0.3
+     */
+    static calcGroupWidth (nodeGroup, measures){
+        const m = measures;
+        return (m.nodeh * nodeGroup.length) + (m.deltah * 2 * (nodeGroup.length - 1));
+    }
 
+    /**
+     * Takes a generation of node groups and calculates x and y of nodes.
+     *
+     *              left                       right
+     *              limit                      limit
+     *                |                          |
+     *                | |----|   |----|   |----| |
+     *                |-|____|-|-|____|-|-|____|-|
+     *   |________|-|-| |  \________|________/ | |-|-|_______|
+     *        |         |           |          |         |
+     *                  |           px         |
+     *                  |----------------------|
+     *                           groupw
+     *
+     * @param {object} viz info about viewport and measures
+     * @param {object} layout the layout
+     * @param {array[]} generation the list of node groups
+     * @param {int} genNum the generation number
+     * @since botch-0.3
+     */
     static updateFrontierLayout (viz, layout, generation, genNum){
         if (genNum === 0){
             return;
@@ -45,33 +77,64 @@ class BotchDebugTab extends React.Component {
         const vp = viz.viewport;
         const m = viz.measures;
         // TO DO
-        const midIndex = generation.length; // Math.floor(generation.length / 2);
-        for (const nodeGroup of generation.slice(0, midIndex)){
+        const midIndex = Math.floor(generation.length / 2);
+        log.log('midIndex', midIndex);
+        const midGroup = generation[midIndex];
+        log.log('midGroup', midGroup);
+        const midX = layout[midGroup[0].parentId].x - (BotchDebugTab.calcGroupWidth(midGroup, m) / 2);
+        
+        log.log('midX', midX);
+        let rightLimit = midX - m.deltaw;
+        log.log('rightLimit', rightLimit);
+        for (const nodeGroup of generation.slice(0, midIndex).reverse()){
+
+            const px = layout[nodeGroup[0].parentId].x;
+            const groupw = BotchDebugTab.calcGroupWidth(nodeGroup, m);
+            rightLimit = Math.min(rightLimit, px + (groupw / 2));
+
+            log.log('new rightLimit', rightLimit);
+            for (let i = 0; i < nodeGroup.length; i++){
+                const node = nodeGroup[i];
+                // |____|-|-|____|-|-|____|-|-|
+                //    |        |        |
+                node.x = rightLimit - groupw + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
+                node.xoff = node.x - (m.nodew / 2);
+                node.y = vp.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
+                node.yoff = node.y - (m.nodeh / 2);
+            }
+            rightLimit = rightLimit - groupw - (2 * m.deltaw);
+        }
+        let leftLimit = midX + m.deltaw;
+        for (const nodeGroup of generation.slice(midIndex, generation.length)){
             /*   x   x   x   x
                        |
             */
             const px = layout[nodeGroup[0].parentId].x;
             
             const groupw = (m.nodeh * nodeGroup.length) + (m.deltah * 2 * (nodeGroup.length - 1));
-            
+            leftLimit = Math.max(leftLimit, px - (groupw / 2));
             for (let i = 0; i < nodeGroup.length; i++){
-                const frontierNode = nodeGroup[i];
-                // |____|-|-|____|-|-|____|-|-|
-                //    |        |        |
-                frontierNode.x = px - (groupw / 2) + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
-                frontierNode.xoff = frontierNode.x - (m.nodew / 2);
-                frontierNode.y = vp.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
-                frontierNode.yoff = frontierNode.y - (m.nodeh / 2);
+                const node = nodeGroup[i];
+                
+                node.x = leftLimit + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
+                node.xoff = node.x - (m.nodew / 2);
+                node.y = vp.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
+                node.yoff = node.y - (m.nodeh / 2);
             }
+            leftLimit = leftLimit + groupw + (2 * m.deltaw);
             
         }
     }
 
     /**
+     * Apparently having derived expensive computations inside life tree component
+     * could be 'an antipattern', so I put laout calculation in the controller container.
      *
-     *
-     * @param {*} state pass state so linter does not complain
-     * @since botch-0.2
+     * @param {*} viz object with viewport and measures
+     * @param {*} libSprites list of sprites as loaded from storageHelper
+     * @returns {object} the calculated layout, notice it has pointers to libSprites
+     *                    without changing the contained objects
+     * @since botch-0.3
      */
     static calcLayout (viz, libSprites){
         
@@ -208,7 +271,7 @@ class BotchDebugTab extends React.Component {
         const viz = {};
         const vp = { // occupied screen
             width: 500,
-            height: 500};
+            height: 650};
 
         viz.viewport = vp;
     

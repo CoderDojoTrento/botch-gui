@@ -175,8 +175,10 @@ class BotchLifeTree extends React.Component {
         return [vb.x, vb.y, vb.width, vb.height].join(' ');
     }
     renderTree (){
-
-        const connectorStyle = {fill: 'lime', stroke: 'purple', strokeWidth: 5, fillRule: 'nonzero'};
+        
+        const connectorStyle = {
+            'stroke': 'brown',
+            'stroke-width': '10px'};
 
         const vp = this.props.viz.viewport;
         const m = this.props.viz.measures;
@@ -192,27 +194,35 @@ class BotchLifeTree extends React.Component {
 
                 style={{border: '1px', red: 'solid'}}
             >
+                {Object.keys(fl).filter(key => fl[key].generation > 1)
+                    .map(key => (
+                
+                        <path
+                            
+                            d={`M ${fl[key].x} ${fl[key].y + (m.nodeh / 2) - 10} L ${fl[fl[key].parentId].x} ${fl[fl[key].parentId].y - (m.nodeh / 2) + 10}`}
+                            style={connectorStyle}
+                            key={typeof fl[key].name === 'string' ? `p${fl[key].name}` : `p${fl[key].rawURL}`}
+                        />
+                    ))}
                 {Object.keys(fl).filter(key => key !== 'parent_0')
                     .map(key => (
                     
                         <g
-                            transform={`translate(${fl[key].xoff},${fl[key].yoff})`}
+                            
                             key={typeof fl[key].name === 'string' ? fl[key].name : fl[key].rawURL}
                         >
-                                                                        
-                            <polygon
-                                points="100,10 40,198 190,78 10,78 160,198"
-                                style={connectorStyle}
-                            />
-                                
+
                             <foreignObject
+                                transform={`translate(${fl[key].xoff},${fl[key].yoff})`}
                                 width={m.nodew}
                                 height={m.nodeh}
                             >
                                 {this.renderTreeItem(fl[key])}
                             </foreignObject>
+                            
+                        </g>
                         
-                        </g>))}
+                    ))}
             </svg>
         );
     }

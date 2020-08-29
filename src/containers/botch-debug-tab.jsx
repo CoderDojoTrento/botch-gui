@@ -103,22 +103,17 @@ class BotchDebugTab extends React.Component {
         const m = viz.measures;
         
         const midIndex = Math.floor(generation.length / 2);
-        log.log('midIndex', midIndex);
         const midGroup = generation[midIndex];
-        log.log('midGroup', midGroup);
         const midX = layout[midGroup[0].parentId].x - (BotchDebugTab.calcGroupWidth(midGroup, m) / 2);
-        
-        log.log('midX', midX);
+                
         let rightLimit = midX - m.deltaw;
-        log.log('rightLimit', rightLimit);
         // first calculate left side
         for (const nodeGroup of generation.slice(0, midIndex).reverse()){
 
             const px = layout[nodeGroup[0].parentId].x;
             const groupw = BotchDebugTab.calcGroupWidth(nodeGroup, m);
             rightLimit = Math.min(rightLimit, px + (groupw / 2));
-
-            log.log('new rightLimit', rightLimit);
+            
             for (let i = 0; i < nodeGroup.length; i++){
                 const node = nodeGroup[i];
                 // |____|-|-|____|-|-|____|-|-|
@@ -214,10 +209,7 @@ class BotchDebugTab extends React.Component {
             }
             layout[laySprite.parentId].children.push(laySprite);
         }
-        
-        log.log('Botch: libSprites', libSprites);
-        log.log('Botch: layout =', layout);
-        log.log('measures=', m);
+                        
 
         const queue = [p0];
         let genNum = 0;
@@ -250,13 +242,12 @@ class BotchDebugTab extends React.Component {
             curParentId = node.parentId;
             
         }
-        
-        log.log('generations=', generations);
 
         for (let i = 0; i < generations.length; i++){
             BotchDebugTab.updateFrontierLayout(viz, layout, generations[i], i);
         }
-        log.log('final layout=', layout);
+                
+        BOTCH.debugLayout = layout;
         return layout;
     }
     /**
@@ -345,8 +336,7 @@ class BotchDebugTab extends React.Component {
     
 
     updateSprites (){
-        
-        log.log('Botch: botch-debug-tab updateSprites. this=', this);
+                
         if (!window.BOTCH){
             log.error('Botch extension is not loaded !');
             return;
@@ -362,7 +352,6 @@ class BotchDebugTab extends React.Component {
                 libSprite.json.objName = candidate;
                 names.add(candidate);
             }
-            log.log('Setting state:', libSprites);
             this.setState({
                 libSprites: libSprites,
                 layout: BotchDebugTab.calcLayout(this.state.viz, libSprites)});

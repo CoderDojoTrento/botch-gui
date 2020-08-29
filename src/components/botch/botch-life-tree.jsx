@@ -170,7 +170,7 @@ class BotchLifeTree extends React.Component {
         this.setState({filterQuery: ''});
     }
     getFilteredLayout () {
-        log.log('Botch TODO, not actually filtering anything !');
+        // log.log('Botch TO DO, not actually filtering anything !');
         return this.props.layout;
         /*
         if (this.state.selectedTag === 'all') {
@@ -223,8 +223,8 @@ class BotchLifeTree extends React.Component {
     renderTree (){
         
         const connectorStyle = {
-            'stroke': 'brown',
-            'stroke-width': '10px'};
+            stroke: 'brown',
+            strokeWidth: '10px'};
 
         const vp = this.props.viz.viewport;
         const m = this.props.viz.measures;

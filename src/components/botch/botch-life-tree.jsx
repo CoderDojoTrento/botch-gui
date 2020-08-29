@@ -44,7 +44,10 @@ class BotchLifeTree extends React.Component {
             'handlePlayingEnd',
             'handleSelect',
             'handleTagClick',
-            'setFilteredDataRef'
+            'setFilteredDataRef',
+            'handleOnPointerDown',
+            'handleOnPointerUp',
+            'handleOnPointerMove'
         ]);
         log.log('Botch props=', props);
         this.state = {
@@ -68,6 +71,19 @@ class BotchLifeTree extends React.Component {
             this.scrollToTop();
         }
     }
+
+    handleOnPointerDown (event){
+        this.props.onPointerDown(event);
+    }
+
+    handleOnPointerMove (event){
+        this.props.onPointerMove(event);
+    }
+
+    handleOnPointerUp (event){
+        this.props.onPointerUp(event);
+    }
+
     handleSelect (id) {
         this.handleClose();
         this.props.onItemSelected(this.getFilteredLayout()[id]);
@@ -170,10 +186,19 @@ class BotchLifeTree extends React.Component {
         this.filteredDataRef = ref;
     }
 
+    /**
+     * @returns {string} a string for svg param
+     * @since botch-0.3
+     */
     getViewBox (){
         const vb = this.props.viz.viewBox;
         return [vb.x, vb.y, vb.width, vb.height].join(' ');
     }
+
+    /**
+     * @returns {object} the rendered tree
+     * @since botch-0.3
+     */
     renderTree (){
         
         const connectorStyle = {
@@ -191,7 +216,9 @@ class BotchLifeTree extends React.Component {
                 width={vp.width}
                 height={vp.height}
                 viewBox={this.getViewBox()}
-
+                onMouseDown={this.handleOnPointerDown}
+                onMouseUp={this.handleOnPointerUp}
+                onMouseMove={this.handleOnPointerMove}
                 style={{border: '1px', red: 'solid'}}
             >
                 {Object.keys(fl).filter(key => fl[key].generation > 1)
@@ -227,6 +254,10 @@ class BotchLifeTree extends React.Component {
         );
     }
 
+    /**
+     * @returns {object} the rendered TreeContainer
+     * @since botch-0.3
+     */
     renderTreeContainer (){
         const LOADED = this.renderTree();
 
@@ -246,7 +277,12 @@ class BotchLifeTree extends React.Component {
             )}
         </div>);
     }
-
+    
+    /**
+     * @param {object} dataItem
+     * @returns {object} the rendered TreeItem
+     * @since botch-0.3
+     */
     renderTreeItem (dataItem){
         return (<BotchLifeTreeItem
             bluetoothRequired={dataItem.bluetoothRequired}
@@ -275,6 +311,10 @@ class BotchLifeTree extends React.Component {
         />);
     }
 
+    /**
+     * @returns {object} the rendered filter
+     * @since botch-0.3
+     */
     renderFilter (){
         return (this.props.filterable || this.props.tags) && (
             <div className={styles.filterBar}>
@@ -338,6 +378,9 @@ BotchLifeTree.propTypes = {
     filterable: PropTypes.bool,
     id: PropTypes.string.isRequired,
     intl: intlShape.isRequired,
+    onPointerDown: PropTypes.func,
+    onPointerUp: PropTypes.func,
+    onPointerMove: PropTypes.func,
     onItemMouseEnter: PropTypes.func,
     onItemMouseLeave: PropTypes.func,
     onItemSelected: PropTypes.func,

@@ -1,12 +1,3 @@
-/*
-    COSE CHE SERVONO PER TAB:
-
-    onActivateOrganismsTab = ?
-    organismsTabVisible = ?
-
-*/
-
-
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';

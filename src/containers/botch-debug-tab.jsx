@@ -39,6 +39,31 @@ const messages = defineMessages({
 class BotchDebugTab extends React.Component {
 
     /**
+     *
+     * @param {@s} event
+     * @since botch-0.3
+     */
+    static getPointFromEvent (event) {
+        const svg = event.target;
+        // Create an SVG point that contains x & y values
+        const point = svg.createSVGPoint();
+
+        // If even is triggered by a touch event, we get the position of the first finger
+        if (event.targetTouches) {
+            point.x = event.targetTouches[0].clientX;
+            point.y = event.targetTouches[0].clientY;
+        } else {
+            point.x = event.clientX;
+            point.y = event.clientY;
+        }
+        
+        // We get the current transformation matrix of the SVG and we inverse it
+        const invertedSVGMatrix = svg.getScreenCTM().inverse();
+        
+        return point.matrixTransform(invertedSVGMatrix);
+    }
+
+    /**
      * Calculates the layed out node group total width.
      * @param {array} nodeGroup list of nodes
      * @param {object} measures the measures
@@ -74,9 +99,9 @@ class BotchDebugTab extends React.Component {
         if (genNum === 0){
             return;
         }
-        const vp = viz.viewport;
+        const vb = viz.viewBox;
         const m = viz.measures;
-        // TO DO
+        
         const midIndex = Math.floor(generation.length / 2);
         log.log('midIndex', midIndex);
         const midGroup = generation[midIndex];
@@ -86,6 +111,7 @@ class BotchDebugTab extends React.Component {
         log.log('midX', midX);
         let rightLimit = midX - m.deltaw;
         log.log('rightLimit', rightLimit);
+        // first calculate left side
         for (const nodeGroup of generation.slice(0, midIndex).reverse()){
 
             const px = layout[nodeGroup[0].parentId].x;
@@ -99,11 +125,12 @@ class BotchDebugTab extends React.Component {
                 //    |        |        |
                 node.x = rightLimit - groupw + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
                 node.xoff = node.x - (m.nodew / 2);
-                node.y = vp.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
+                node.y = vb.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
                 node.yoff = node.y - (m.nodeh / 2);
             }
             rightLimit = rightLimit - groupw - (2 * m.deltaw);
         }
+        // then calculate right side
         let leftLimit = midX + m.deltaw;
         for (const nodeGroup of generation.slice(midIndex, generation.length)){
             /*   x   x   x   x
@@ -118,7 +145,7 @@ class BotchDebugTab extends React.Component {
                 
                 node.x = leftLimit + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
                 node.xoff = node.x - (m.nodew / 2);
-                node.y = vp.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
+                node.y = vb.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
                 node.yoff = node.y - (m.nodeh / 2);
             }
             leftLimit = leftLimit + groupw + (2 * m.deltaw);
@@ -265,7 +292,11 @@ class BotchDebugTab extends React.Component {
         super(props);
         bindAll(this, [
             'handleItemSelect',
-            'updateSprites'
+            'updateSprites',
+            'handleOnPointerDown',
+            'handleOnPointerMove',
+            'handleOnPointerUp'
+
         ]);
 
         const viz = {};
@@ -295,7 +326,9 @@ class BotchDebugTab extends React.Component {
         this.state = {
             libSprites: [],
             layout: {},
-            viz: viz};
+            viz: viz,
+            isPointerDown: false,
+            pointerOrigin: null};
     }
 
     componentDidMount () {
@@ -349,6 +382,51 @@ class BotchDebugTab extends React.Component {
         log.log(`Selected tab: ${index}`);
     }
 
+    handleOnPointerDown (event){
+        this.setState({
+            isPointerDown: true,
+            pointerOrigin: BotchDebugTab.getPointFromEvent(event)
+        });
+        
+    }
+
+
+    handleOnPointerMove (event){
+        // Only run this function if the pointer is down
+        if (!this.state.isPointerDown) {
+            return;
+        }
+        // This prevent user to do a selection on the page
+        event.preventDefault();
+      
+        // Get the pointer position as an SVG Point
+        const pointerPosition = BotchDebugTab.getPointFromEvent(event);
+      
+        // Update the viewBox variable with the distance from origin and current position
+        // We don't need to take care of a ratio because this is handled in the getPointFromEvent function
+        const oldViewBox = this.state.viz.viewBox;
+        const newViewBox = {
+            x: oldViewBox.x - (pointerPosition.x - this.state.pointerOrigin.x),
+            y: oldViewBox.y - (pointerPosition.y - this.state.pointerOrigin.y),
+            height: oldViewBox.height,
+            width: oldViewBox.width
+        };
+        this.setState({
+            viz: {
+                viewBox: newViewBox,
+                viewport: this.state.viz.viewport,
+                measures: this.state.viz.measures
+            }
+        });
+    }
+
+    handleOnPointerUp (event){
+        this.setState(
+            {isPointerDown: false}
+        );
+    }
+
+
     handleItemSelect (item) {
         // Randomize position of library sprite
         randomizeSpritePosition(item);
@@ -372,16 +450,12 @@ class BotchDebugTab extends React.Component {
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}
             onItemSelected={this.handleItemSelect}
+            onPointerDown={this.handleOnPointerDown}
+            onPointerMove={this.handleOnPointerMove}
+            onPointerUp={this.handleOnPointerUp}
+            
         />);
-        /* (
-            <canvas
-                id="orgCanvas"
-                width={400}
-                height={400}
-                style={{border: '1px solid black', backgroundColor: 'white'}}
-                onClick={this.showCostume}>
-            </canvas>
-        );*/
+        
     }
 }
 

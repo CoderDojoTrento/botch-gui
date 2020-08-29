@@ -45,9 +45,10 @@ class BotchLifeTree extends React.Component {
             'handleSelect',
             'handleTagClick',
             'setFilteredDataRef',
-            'handleOnPointerDown',
-            'handleOnPointerUp',
-            'handleOnPointerMove'
+            'handleOnMouseDown',
+            'handleOnMouseUp',
+            'handleOnMouseMove',
+            'handleOnWheel'
         ]);
         log.log('Botch props=', props);
         this.state = {
@@ -72,16 +73,36 @@ class BotchLifeTree extends React.Component {
         }
     }
 
-    handleOnPointerDown (event){
-        this.props.onPointerDown(event);
+    /**
+     * @param {object}  event mouse event
+     * @since botch-0.3
+     */
+    handleOnMouseDown (event){
+        this.props.onMouseDown(event);
     }
 
-    handleOnPointerMove (event){
-        this.props.onPointerMove(event);
+    /**
+     * @param {object}  event mouse event
+     * @since botch-0.3
+     */
+    handleOnMouseMove (event){
+        this.props.onMouseMove(event);
     }
 
-    handleOnPointerUp (event){
-        this.props.onPointerUp(event);
+    /**
+     * @param {object}  event mouse event
+     * @since botch-0.3
+     */
+    handleOnMouseUp (event){
+        this.props.onMouseUp(event);
+    }
+
+    /**
+     * @param {object}  event mouse event
+     * @since botch-0.3
+     */
+    handleOnWheel (event){
+        this.props.onWheel(event);
     }
 
     handleSelect (id) {
@@ -209,16 +230,19 @@ class BotchLifeTree extends React.Component {
         const m = this.props.viz.measures;
         
         const fl = this.getFilteredLayout();
-        log.log('filtered layout =', fl);
         
         return (
             <svg
                 width={vp.width}
                 height={vp.height}
                 viewBox={this.getViewBox()}
-                onMouseDown={this.handleOnPointerDown}
-                onMouseUp={this.handleOnPointerUp}
-                onMouseMove={this.handleOnPointerMove}
+                onMouseDown={this.handleOnMouseDown}
+                onMouseMove={this.handleOnMouseMove}
+                onMouseUp={this.handleOnMouseUp}
+                onTouchStart={this.handleOnMouseDown}
+                onTouchMove={this.handleOnMouseMove}
+                onTouchEnd={this.handleOnMouseUp}
+                onWheel={this.handleOnWheel}
                 style={{border: '1px', red: 'solid'}}
             >
                 {Object.keys(fl).filter(key => fl[key].generation > 1)
@@ -378,9 +402,10 @@ BotchLifeTree.propTypes = {
     filterable: PropTypes.bool,
     id: PropTypes.string.isRequired,
     intl: intlShape.isRequired,
-    onPointerDown: PropTypes.func,
-    onPointerUp: PropTypes.func,
-    onPointerMove: PropTypes.func,
+    onMouseDown: PropTypes.func,
+    onMouseUp: PropTypes.func,
+    onMouseMove: PropTypes.func,
+    onWheel: PropTypes.func,
     onItemMouseEnter: PropTypes.func,
     onItemMouseLeave: PropTypes.func,
     onItemSelected: PropTypes.func,

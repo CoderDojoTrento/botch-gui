@@ -44,7 +44,7 @@ class BotchDebugTab extends React.Component {
      * @since botch-0.3
      */
     static getPointFromEvent (event) {
-        const svg = event.target;
+        const svg = event.currentTarget;
         // Create an SVG point that contains x & y values
         const point = svg.createSVGPoint();
 
@@ -293,10 +293,10 @@ class BotchDebugTab extends React.Component {
         bindAll(this, [
             'handleItemSelect',
             'updateSprites',
-            'handleOnPointerDown',
-            'handleOnPointerMove',
-            'handleOnPointerUp'
-
+            'handleTreeDragStart',
+            'handleTreeDragMove',
+            'handleTreeDragStop',
+            'handleTreeWheel'
         ]);
 
         const viz = {};
@@ -319,6 +319,10 @@ class BotchDebugTab extends React.Component {
             nodeh: 150,
             nodew: 100
         };
+
+        viz.isPointerDown = false;
+        viz.pointerOrigin = null;
+        viz.zoom = 1.0;
         const m = viz.measures;
         
         m.levh = (m.deltah * 2) + m.nodeh;
@@ -326,9 +330,7 @@ class BotchDebugTab extends React.Component {
         this.state = {
             libSprites: [],
             layout: {},
-            viz: viz,
-            isPointerDown: false,
-            pointerOrigin: null};
+            viz: viz};
     }
 
     componentDidMount () {
@@ -382,21 +384,33 @@ class BotchDebugTab extends React.Component {
         log.log(`Selected tab: ${index}`);
     }
 
-    handleOnPointerDown (event){
+    /**
+     * @param {object} event mouse event
+     * @since botch-0.3
+     */
+    handleTreeDragStart (event){
+        
+        const newViz = {...this.state.viz};
+        newViz.isPointerDown = true;
+        newViz.pointerOrigin = BotchDebugTab.getPointFromEvent(event);
+
         this.setState({
-            isPointerDown: true,
-            pointerOrigin: BotchDebugTab.getPointFromEvent(event)
+            viz: newViz
         });
         
     }
 
-
-    handleOnPointerMove (event){
+    /**
+     *
+     * @param {*} event mouse event
+     * @since botch-0.3
+     */
+    handleTreeDragMove (event){
         // Only run this function if the pointer is down
-        if (!this.state.isPointerDown) {
+        if (!this.state.viz.isPointerDown) {
             return;
         }
-        // This prevent user to do a selection on the page
+        // Prevents user to do a selection on the page
         event.preventDefault();
       
         // Get the pointer position as an SVG Point
@@ -404,28 +418,68 @@ class BotchDebugTab extends React.Component {
       
         // Update the viewBox variable with the distance from origin and current position
         // We don't need to take care of a ratio because this is handled in the getPointFromEvent function
-        const oldViewBox = this.state.viz.viewBox;
+        const oldViz = this.state.viz;
+        const oldViewBox = oldViz.viewBox;
         const newViewBox = {
-            x: oldViewBox.x - (pointerPosition.x - this.state.pointerOrigin.x),
-            y: oldViewBox.y - (pointerPosition.y - this.state.pointerOrigin.y),
+            x: oldViewBox.x - (pointerPosition.x - oldViz.pointerOrigin.x),
+            y: oldViewBox.y - (pointerPosition.y - oldViz.pointerOrigin.y),
             height: oldViewBox.height,
             width: oldViewBox.width
         };
+        const newViz = {...oldViz};
+        newViz.viewBox = newViewBox;
+
         this.setState({
-            viz: {
-                viewBox: newViewBox,
-                viewport: this.state.viz.viewport,
-                measures: this.state.viz.measures
-            }
+            viz: newViz
         });
     }
 
-    handleOnPointerUp (event){
-        this.setState(
-            {isPointerDown: false}
-        );
+    /**
+     * @since botch-0.3
+     */
+    handleTreeDragStop (){
+        const newViz = {...this.state.viz};
+        newViz.isPointerDown = false;
+        this.setState({
+            viz: newViz
+        });
     }
 
+    /**
+     * Sets new zoomed viewbox
+     * @param {int} factor zoom factor
+     * @param {{x:int,y:int}} p current mouse pointer
+     * @since botch-3.0
+     */
+    zoom (factor, p) {
+        const oldViz = this.state.viz;
+        const newViz = {...this.state.viz};
+        newViz.zoom = oldViz.zoom * factor;
+        const oldViewBox = oldViz.viewBox;
+        const newViewBox = {...oldViewBox};
+        newViewBox.width = oldViewBox.width * factor;
+        newViewBox.height = oldViewBox.height * factor;
+        newViewBox.x = (oldViewBox.x * factor) + (p.x - (p.x * factor));
+        newViewBox.y = (oldViewBox.y * factor) + (p.y - (p.y * factor));
+        newViz.viewBox = newViewBox;
+        this.setState({
+            viz: newViz
+        });
+    }
+
+    /**
+     * Manages zooming by wheel
+     * @param {object} event mouse event
+     * @since botch-0.3
+     */
+    handleTreeWheel (event) {
+        const p = BotchDebugTab.getPointFromEvent(event);
+        if (event.deltaY > 0) {
+            this.zoom(1.05, p);
+        } else {
+            this.zoom(0.95, p);
+        }
+    }
 
     handleItemSelect (item) {
         // Randomize position of library sprite
@@ -450,9 +504,10 @@ class BotchDebugTab extends React.Component {
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}
             onItemSelected={this.handleItemSelect}
-            onPointerDown={this.handleOnPointerDown}
-            onPointerMove={this.handleOnPointerMove}
-            onPointerUp={this.handleOnPointerUp}
+            onMouseDown={this.handleTreeDragStart}
+            onMouseMove={this.handleTreeDragMove}
+            onMouseUp={this.handleTreeDragStop}
+            onWheel={this.handleTreeWheel}
             
         />);
         

@@ -40,7 +40,8 @@ class BotchDebugTab extends React.Component {
 
     /**
      *
-     * @param {@s} event
+     * @param {@s} event the mouse event
+     * @returns {{x:float,y:float}} the point in relative coordinates
      * @since botch-0.3
      */
     static getPointFromEvent (event) {
@@ -506,15 +507,8 @@ class BotchDebugTab extends React.Component {
 
 BotchDebugTab.propTypes = {
     dispatchUpdateRestore: PropTypes.func,
-    editingTarget: PropTypes.string,
     intl: intlShape.isRequired,
-    isRtl: PropTypes.bool,
-    onActivateBlocksTab: PropTypes.func,
-    onCloseImporting: PropTypes.func.isRequired,
-    
-    onShowImporting: PropTypes.func.isRequired,
-    soundLibraryVisible: PropTypes.bool,
-    soundRecorderVisible: PropTypes.bool,
+            
     stage: PropTypes.shape({
         sounds: PropTypes.arrayOf(PropTypes.shape({
             name: PropTypes.string.isRequired

@@ -69,7 +69,7 @@ export default [
         featured: true,
         disabled: false,
         // internetConnectionRequired: true,
-        bluetoothRequired: false,
+        bluetoothRequired: false
         // helpLink: 'https://scratch.mit.edu/wedo'
     },
     // --

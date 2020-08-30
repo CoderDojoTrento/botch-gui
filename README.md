@@ -1,12 +1,14 @@
 # botch-gui
 
-#### Botch GUI is a set of React components that comprise the interface for creating and running Botch 3.0 projects
+#### Botch GUI is a customization of Scratch programming language to teach evolutionary computing for kids
 
  Botch is developed by non-profit [CoderDolomiti Association](https://www.coderdolomiti.it) and it is a very small customization of the original Scratch GUI developed by Massachussets Institute of Technology (MIT), which we thank for their great work. Authors of Botch GUI are not affiliated in any way with MIT.
 
-#### STATUS: design phase
+Specifically, the GUI is a set of React components that comprise the interface for creating and running Botch 3.0 projects.As a dependency, it uses the [Botch VM](https://github.com/CoderDojoTrento/botch-vm), a customized version of original Scratch VM.
 
-[![Build Status](https://travis-ci.com/LLK/scratch-gui.svg?token=Yfq2ryN1BwaxDME69Lnc&branch=master)](https://travis-ci.com/LLK/scratch-gui)
+#### STATUS: alpha prototype
+
+[![Build Status](https://travis-ci.org/CoderDojoTrento/botch-gui.svg?branch=prove)](https://travis-ci.org/CoderDojoTrento/botch-gui)
 
 **Why?** [Evolutionary computing](https://en.wikipedia.org/wiki/Evolutionary_computation) is a family of bio-inspired algorithms which attempt to discover optimal instructions a program should have in order to solve a given problem. In the world of education, [serious gaming](https://en.wikipedia.org/wiki/Serious_game) is a mean to convey complex concepts by means of playing special purpose games, with growing adoption both in schools and businesses. The aim of Botch project is thus devising a serious gaming platform to show young generations in secondary schools aged 11-19 how organisms shapes and behavior can be encoded in a programming language, and how they can evolve to fulfill goals in a given environment.
 
@@ -92,6 +94,7 @@ In **botch/.vscode/settings.json**  add the following:
 See [issues marked with Release](https://github.com/coderdojotrento/botch-gui/issues?q=is%3Aissue+is%3Aopen+release)
 
 (created because unfortunately Github Milestones ignores newlines !)
+
 
 ## ------- ORIGINAL  SCRATCH-GUI README   
 

@@ -250,7 +250,8 @@ class BotchLifeTree extends React.Component {
                 
                         <path
                             
-                            d={`M ${fl[key].x} ${fl[key].y + (m.nodeh / 2) - 10} L ${fl[fl[key].parentId].x} ${fl[fl[key].parentId].y - (m.nodeh / 2) + 10}`}
+                            d={`M ${fl[key].x} ${fl[key].y + (m.nodeh / 2) - 10}
+                                L ${fl[fl[key].parentId].x} ${fl[fl[key].parentId].y - (m.nodeh / 2) + 10}`}
                             style={connectorStyle}
                             key={typeof fl[key].name === 'string' ? `p${fl[key].name}` : `p${fl[key].rawURL}`}
                         />
@@ -303,7 +304,7 @@ class BotchLifeTree extends React.Component {
     }
     
     /**
-     * @param {object} dataItem
+     * @param {object} dataItem the item to render
      * @returns {object} the rendered TreeItem
      * @since botch-0.3
      */
@@ -397,8 +398,9 @@ class BotchLifeTree extends React.Component {
 }
 
 BotchLifeTree.propTypes = {
-    layout: PropTypes.any.isRequired,
-    viz: PropTypes.object.isRequired,
+    
+    layout: PropTypes.any.isRequired, // eslint-disable-line react/forbid-prop-types
+    viz: PropTypes.any.isRequired, // eslint-disable-line react/forbid-prop-types
     filterable: PropTypes.bool,
     id: PropTypes.string.isRequired,
     intl: intlShape.isRequired,

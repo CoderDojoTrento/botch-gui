@@ -2,7 +2,7 @@ import {defineMessages} from 'react-intl';
 import sharedMessages from '../shared-messages';
 import triangle from '!raw-loader!./triangle.svg';
 
-const md5 = require('js-md5');
+import md5 from 'js-md5';
 
 let messages = defineMessages({
     meow: {
@@ -80,7 +80,7 @@ const projectData = translateFunction => {
                         assetId: md5(triangle),
                         name: 'triangle',
                         bitmapResolution: 1,
-                        md5ext: md5(triangle) + '.svg',
+                        md5ext: `${md5(triangle)}.svg`,
                         dataFormat: 'svg',
                         rotationCenterX: 25,
                         rotationCenterY: 25

@@ -506,7 +506,6 @@ class BotchDebugTab extends React.Component {
 
 
 BotchDebugTab.propTypes = {
-    dispatchUpdateRestore: PropTypes.func,
     intl: intlShape.isRequired,
             
     stage: PropTypes.shape({

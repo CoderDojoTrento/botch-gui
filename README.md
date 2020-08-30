@@ -1,12 +1,12 @@
 # botch-gui
 
-#### Botch GUI is a customization of Scratch programming language to teach evolutionary computing for kids
+#### Botch GUI is a customization of Scratch programming language to teach evolutionary computing
 
  Botch is developed by non-profit [CoderDolomiti Association](https://www.coderdolomiti.it) and it is a very small customization of the original Scratch GUI developed by Massachussets Institute of Technology (MIT), which we thank for their great work. Authors of Botch GUI are not affiliated in any way with MIT.
 
 Specifically, the GUI is a set of React components that comprise the interface for creating and running Botch 3.0 projects.As a dependency, it uses the [Botch VM](https://github.com/CoderDojoTrento/botch-vm), a customized version of original Scratch VM.
 
-#### STATUS: alpha prototype
+#### STATUS: prototype
 
 [![Build Status](https://travis-ci.org/CoderDojoTrento/botch-gui.svg?branch=prove)](https://travis-ci.org/CoderDojoTrento/botch-gui)
 

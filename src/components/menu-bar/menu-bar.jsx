@@ -224,6 +224,13 @@ class MenuBar extends React.Component {
             this.props.onClickSave();
             event.preventDefault();
         }
+        // Botch
+        if (modifier && event.key === 'd') {
+            // TO DO surely not the react way, and I do not care
+            /* global BOTCH */
+            BOTCH.switchDebugMode();
+            event.preventDefault();
+        }
     }
     getSaveToComputerHandler (downloadProjectCallback) {
         return () => {

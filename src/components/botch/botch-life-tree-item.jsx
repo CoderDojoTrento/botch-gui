@@ -91,8 +91,8 @@ class BotchLifeTreeItem extends React.PureComponent {
     startRotatingIcons () {
         // TO DO Botch: temporarily removed, but don't like this
         // https://github.com/CoderDojoTrento/botch-gui/issues/22
-        // this.rotateIcon();
-        // this.intervalId = setInterval(this.rotateIcon, 300);
+        this.rotateIcon();
+        this.intervalId = setInterval(this.rotateIcon, 300);
     }
     stopRotatingIcons () {
         if (this.intervalId) {

@@ -163,9 +163,11 @@ const mapDispatchToProps = dispatch => ({
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
     onActivateOrganismsTab: () => dispatch(activateTab(ORGANISMS_TAB_INDEX)), /* Botch */
+    onActivateBotchDebugTab: () => dispatch(activateTab(BOTCH_DEBUG_TAB_INDEX)), /* Botch */
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
     onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal())
+    
 });
 
 const ConnectedGUI = injectIntl(connect(

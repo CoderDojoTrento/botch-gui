@@ -316,6 +316,8 @@ const GUIComponent = props => {
                                     <Tab
                                         className={tabClassNames.tab}
                                         onClick={onActivateBotchDebugTab}
+                                        // TO DO surely not the react way, and I do not care
+                                        style={BOTCH.debugMode ? {} : {display: 'none'}}
                                     >
                                         <img
                                             draggable={false}

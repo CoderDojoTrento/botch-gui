@@ -232,6 +232,7 @@ class BotchLifeTree extends React.Component {
         treeBaseStyle.strokeWidth = '15px';
 
         const vp = this.props.viz.viewport;
+        const vb = this.props.viz.viewBox;
         const m = this.props.viz.measures;
         
         const fl = this.getFilteredLayout();
@@ -272,7 +273,11 @@ class BotchLifeTree extends React.Component {
                             key={typeof fl[key].name === 'string' ? `p${fl[key].name}` : `p${fl[key].rawURL}`}
                         />
                     ))}
-                {Object.keys(fl).filter(key => key !== 'parent_0')
+                {Object.keys(fl).filter(key => key !== 'parent_0' &&
+                                               fl[key].x < vb.x + vb.width + m.nodew &&
+                                               fl[key].x > vb.x - m.nodew &&
+                                               fl[key].y < vb.y + vb.height + m.nodeh &&
+                                               fl[key].y > vb.y - m.nodeh)
                     .map(key => (
                     
                         <g

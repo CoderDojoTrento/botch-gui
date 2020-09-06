@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {injectIntl} from 'react-intl';
 import getCostumeUrl from '../../lib/get-costume-url';
-import log from '../../lib/log.js';
 
 
 import LibraryItemComponent from '../../components/library-item/library-item.jsx';
@@ -32,7 +31,7 @@ class BotchLifeTreeItem extends React.PureComponent {
             iconIndex: this.props.currentCostume,
             isRotatingIcon: false
         };
-        log.log('BotchLifeTreeItem state', this.state, 'props', this.props);
+        
     }
     componentWillUnmount () {
         clearInterval(this.intervalId);
@@ -91,8 +90,10 @@ class BotchLifeTreeItem extends React.PureComponent {
     startRotatingIcons () {
         // TO DO Botch: temporarily removed, but don't like this
         // https://github.com/CoderDojoTrento/botch-gui/issues/22
+        /*
         this.rotateIcon();
         this.intervalId = setInterval(this.rotateIcon, 300);
+        */
     }
     stopRotatingIcons () {
         if (this.intervalId) {

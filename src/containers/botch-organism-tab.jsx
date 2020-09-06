@@ -37,10 +37,13 @@ const messages = defineMessages({
 });
 
 /**
- * @since botch-0.2
+ * @since botch-0.3
  */
-class BotchDebugTab extends React.Component {
+class BotchOrganismTab extends React.Component {
 
+    static get MIN_ZOOM (){
+        return 2.0;
+    }
     /**
      *
      * @param {@s} event the mouse event
@@ -109,7 +112,7 @@ class BotchDebugTab extends React.Component {
         
         const midIndex = Math.floor(generation.length / 2);
         const midGroup = generation[midIndex];
-        const midX = layout[midGroup[0].parentId].x - (BotchDebugTab.calcGroupWidth(midGroup, m) / 2);
+        const midX = layout[midGroup[0].parentId].x - (BotchOrganismTab.calcGroupWidth(midGroup, m) / 2);
         const midY = layout[midGroup[0].parentId].y;
 
         let rightLimit = midX - m.deltaw;
@@ -117,7 +120,7 @@ class BotchDebugTab extends React.Component {
         for (const nodeGroup of generation.slice(0, midIndex).reverse()){
 
             const px = layout[nodeGroup[0].parentId].x;
-            const groupw = BotchDebugTab.calcGroupWidth(nodeGroup, m);
+            const groupw = BotchOrganismTab.calcGroupWidth(nodeGroup, m);
             rightLimit = Math.min(rightLimit, px + (groupw / 2));
             
             for (let i = 0; i < nodeGroup.length; i++){
@@ -249,7 +252,7 @@ class BotchDebugTab extends React.Component {
         }
 
         for (let i = 0; i < generations.length; i++){
-            BotchDebugTab.updateFrontierLayout(viz, layout, generations[i], i);
+            BotchOrganismTab.updateFrontierLayout(viz, layout, generations[i], i);
         }
                 
         BOTCH.debugLayout = layout;
@@ -258,7 +261,7 @@ class BotchDebugTab extends React.Component {
 
     static calcViz (stageSize, isFullScreen){
         const stageDimensions = getStageDimensions(stageSize, isFullScreen);
-        log.log(stageDimensions);
+        
         const viz = {};
         const vp = { // occupied screen
             width: window.innerWidth - stageDimensions.width - 40,
@@ -286,7 +289,7 @@ class BotchDebugTab extends React.Component {
         const m = viz.measures;
         
         m.levh = (m.deltah * 2) + m.nodeh;
-        log.log('Botch Debug Tab: viz = ', viz);
+        
         return viz;
     }
 
@@ -297,7 +300,7 @@ class BotchDebugTab extends React.Component {
      * @param {string} name name to test
      * @param {Set<string>} names a set of existing names.
      * @returns {string} the new candidate name
-     * @since botch-0.2
+     * @since botch-0.3
      */
     static findNewName (name, names){
         let candidate = name;
@@ -324,7 +327,7 @@ class BotchDebugTab extends React.Component {
         bindAll(this, [
             'handleItemSelect',
             'updateSprites',
-            'updateVizViewport',
+            'updateViz',
             'handleTreeDragStart',
             'handleTreeDragMove',
             'handleTreeDragStop',
@@ -334,45 +337,45 @@ class BotchDebugTab extends React.Component {
         this.state = {
             libSprites: [],
             layout: {},
-            viz: BotchDebugTab.calcViz(this.props.stageSize, this.props.isFullScreen)};
+            viz: BotchOrganismTab.calcViz(this.props.stageSize, this.props.isFullScreen)};
         
     }
 
     /**
-     * @since botch-0.2
+     * @since botch-0.3
      */
     componentDidMount () {
-        log.log('Botch: botch-debug-tab ComponentDidMount');
         this.updateSprites();
         this.props.vm.on('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
-        window.addEventListener('resize', this.updateVizViewport);
+        window.addEventListener('resize', this.updateViz);
     }
 
     /**
-     * @since botch-0.2
+     * @since botch-0.3
      */
     componentWillUnmount () {
-        log.log('Botch: botch-debug-tab ComponentWillUnmount');
         this.props.vm.removeListener('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
-        window.removeEventListener('resize', this.updateVizViewport);
+        window.removeEventListener('resize', this.updateViz);
     }
     
     /**
      * @since botch-0.3
      */
-    updateVizViewport (){
-        
-        log.log('BotchDebugTab: Updating only viewport viz ...');
+    updateViz (){
+                
         const newState = {...this.state};
         const newViz = {...this.state.viz};
-        newViz.viewport = BotchDebugTab.calcViz(this.props.stageSize, this.props.isFullScreen).viewport;
+        const newStuff = BotchOrganismTab.calcViz(this.props.stageSize, this.props.isFullScreen);
+        newViz.viewport = newStuff.viewport;
+        newViz.viewBox.width = newStuff.viewBox.width * this.state.viz.zoom;
+        newViz.viewBox.height = newStuff.viewBox.height * this.state.viz.zoom;
         newState.viz = newViz;
         this.setState(newState);
         
     }
 
     /**
-     * @since botch-0.2
+     * @since botch-0.3
      */
     updateSprites (){
                 
@@ -380,12 +383,11 @@ class BotchDebugTab extends React.Component {
             log.error('Botch extension is not loaded !');
             return;
         }
-        
-        // log.log('this=', this);
+                
         BOTCH.loadLibrarySprites().then(libSprites => {
             const names = new Set();
             for (const libSprite of libSprites){
-                const candidate = BotchDebugTab.findNewName(libSprite.name, names);
+                const candidate = BotchOrganismTab.findNewName(libSprite.name, names);
                 libSprite.name = candidate;
                 libSprite.json.name = candidate;
                 libSprite.json.objName = candidate;
@@ -393,13 +395,13 @@ class BotchDebugTab extends React.Component {
             }
             this.setState({
                 libSprites: libSprites,
-                layout: BotchDebugTab.calcLayout(this.state.viz, libSprites)});
+                layout: BotchOrganismTab.calcLayout(this.state.viz, libSprites)});
         });
 
     }
 
     /**
-     * @since botch-0.2
+     * @since botch-0.3
      * @returns {*} tags list
      */
     getTags (){
@@ -413,7 +415,7 @@ class BotchDebugTab extends React.Component {
     /**
      * TO DO doesn't do anything ...
      * @param {int} index index of selected element
-     * @since botch-0.2
+     * @since botch-0.3
      */
     handleSelect (index){
         // TO DO DOES NOT SHOW ANYTHING !
@@ -433,7 +435,7 @@ class BotchDebugTab extends React.Component {
         }
         const newViz = {...this.state.viz};
         newViz.isPointerDown = true;
-        newViz.pointerOrigin = BotchDebugTab.getPointFromEvent(event);
+        newViz.pointerOrigin = BotchOrganismTab.getPointFromEvent(event);
 
         this.setState({
             viz: newViz
@@ -459,7 +461,7 @@ class BotchDebugTab extends React.Component {
             return;
         }
         // Get the pointer position as an SVG Point
-        const pointerPosition = BotchDebugTab.getPointFromEvent(event);
+        const pointerPosition = BotchOrganismTab.getPointFromEvent(event);
       
         // Update the viewBox variable with the distance from origin and current position
         // We don't need to take care of a ratio because this is handled in the getPointFromEvent function
@@ -503,6 +505,9 @@ class BotchDebugTab extends React.Component {
      * @since botch-3.0
      */
     zoom (factor, p) {
+        if (this.state.viz.zoom > BotchOrganismTab.MIN_ZOOM && factor > 1.0){
+            return;
+        }
         const oldViz = this.state.viz;
         const newViz = {...this.state.viz};
         newViz.zoom = oldViz.zoom * factor;
@@ -524,7 +529,7 @@ class BotchDebugTab extends React.Component {
      * @since botch-0.3
      */
     handleTreeWheel (event) {
-        const p = BotchDebugTab.getPointFromEvent(event);
+        const p = BotchOrganismTab.getPointFromEvent(event);
         if (event.deltaY > 0) {
             this.zoom(1.05, p);
         } else {
@@ -533,11 +538,10 @@ class BotchDebugTab extends React.Component {
     }
 
     /**
-     * @since botch-0.2
+     * @since botch-0.3
      * @param {@sis} item selected item
      */
     handleItemSelect (item) {
-        log.log('Selected', item.json);
         // Randomize position of library sprite
         randomizeSpritePosition(item);
         this.props.vm.addSprite(JSON.stringify(item.json)).then(() => {
@@ -551,7 +555,7 @@ class BotchDebugTab extends React.Component {
     }
 
     /**
-     * @since botch-0.2
+     * @since botch-0.3
      * @returns {*} rendered component
      */
     render () {
@@ -574,7 +578,7 @@ class BotchDebugTab extends React.Component {
 }
 
 
-BotchDebugTab.propTypes = {
+BotchOrganismTab.propTypes = {
     intl: intlShape.isRequired,
             
     stage: PropTypes.shape({
@@ -608,9 +612,9 @@ const mapDispatchToProps = dispatch => ({
 
 // export default injectIntl(SpriteLibrary);
 
-export default errorBoundaryHOC('BotchDebug Tab')(
+export default errorBoundaryHOC('BotchOrganism Tab')(
     injectIntl(connect(
         mapStateToProps,
         mapDispatchToProps
-    )(BotchDebugTab))
+    )(BotchOrganismTab))
 );

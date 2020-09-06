@@ -4,7 +4,7 @@ const ACTIVATE_TAB = 'scratch-gui/navigation/ACTIVATE_TAB';
 const BLOCKS_TAB_INDEX = 0;
 const COSTUMES_TAB_INDEX = 1;
 const SOUNDS_TAB_INDEX = 2;
-const ORGANISMS_TAB_INDEX = 3;
+const BOTCH_ORGANISMS_TAB_INDEX = 3;
 const BOTCH_DEBUG_TAB_INDEX = 4;
 
 const initialState = {
@@ -37,6 +37,6 @@ export {
     BLOCKS_TAB_INDEX,
     COSTUMES_TAB_INDEX,
     SOUNDS_TAB_INDEX,
-    ORGANISMS_TAB_INDEX,
+    BOTCH_ORGANISMS_TAB_INDEX,
     BOTCH_DEBUG_TAB_INDEX
 };

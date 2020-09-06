@@ -14,7 +14,7 @@ import Blocks from '../../containers/blocks.jsx';
 import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
-import OrganismTab from '../../containers/organism-tab.jsx'; /* Botch */
+import BotchOrganismTab from '../../containers/botch-organism-tab.jsx'; /* Botch */
 import BotchDebugTab from '../../containers/botch-debug-tab.jsx';
 import StageWrapper from '../../containers/stage-wrapper.jsx';
 import Loader from '../loader/loader.jsx';
@@ -42,8 +42,8 @@ import codeIcon from './icon--code.svg';
 import costumesIcon from './icon--costumes.svg';
 import soundsIcon from './icon--sounds.svg';
 
-import organismIcon from './icon--organism.svg'; /* Botch */
-import botchDebugIcon from '../botch/icon--botch-debug.svg'; /* Botch */
+import botchOrganismIcon from './icon--organism.svg';
+import botchDebugIcon from '../botch/icon--botch-debug.svg';
 
 const messages = defineMessages({
     addExtension: {
@@ -101,7 +101,7 @@ const GUIComponent = props => {
         onToggleLoginOpen,
         onActivateCostumesTab,
         onActivateSoundsTab,
-        onActivateOrganismsTab, /* Botch */
+        onActivateBotchOrganismsTab, /* Botch */
         onActivateBotchDebugTab, /* Botch */
         onActivateTab,
         onClickLogo,
@@ -115,7 +115,7 @@ const GUIComponent = props => {
         onTelemetryModalCancel,
         onTelemetryModalOptIn,
         onTelemetryModalOptOut,
-        organismsTabVisible, /* Botch */
+        botchOrganismsTabVisible, /* Botch */
         botchDebugTabVisible, /* Botch */
         showComingSoon,
         soundsTabVisible,
@@ -300,16 +300,16 @@ const GUIComponent = props => {
 
                                     <Tab
                                         className={tabClassNames.tab}
-                                        onClick={onActivateOrganismsTab}
+                                        onClick={onActivateBotchOrganismsTab}
                                     >
                                         <img
                                             draggable={false}
-                                            src={organismIcon}
+                                            src={botchOrganismIcon}
                                         />
                                         <FormattedMessage
                                             defaultMessage="Organism"
                                             description="Button to get to the organism panel"
-                                            id="gui.gui.?"
+                                            id="gui.gui.botchOrganismTab"
                                         />
                                     </Tab>
 
@@ -317,6 +317,7 @@ const GUIComponent = props => {
                                         className={tabClassNames.tab}
                                         onClick={onActivateBotchDebugTab}
                                         // TO DO surely not the react way, and I do not care
+                                        /* global BOTCH */
                                         style={BOTCH.debugMode ? {} : {display: 'none'}}
                                     >
                                         <img
@@ -372,7 +373,7 @@ const GUIComponent = props => {
                                 {/* Botch */}
 
                                 <TabPanel /* className={tabClassNames.tabPanel} */>
-                                    {organismsTabVisible ? <OrganismTab
+                                    {botchOrganismsTabVisible ? <BotchOrganismTab
                                         isRendererSupported={isRendererSupported}
                                         isRtl={isRtl}
                                         stageSize={stageSize}
@@ -452,7 +453,7 @@ GUIComponent.propTypes = {
     loading: PropTypes.bool,
     logo: PropTypes.string,
     onActivateCostumesTab: PropTypes.func,
-    onActivateOrganismsTab: PropTypes.func, /* Botch */
+    onActivateBotchOrganismsTab: PropTypes.func, /* Botch */
     onActivateBotchDebugTab: PropTypes.func, /* Botch */
     onActivateSoundsTab: PropTypes.func,
     onActivateTab: PropTypes.func,

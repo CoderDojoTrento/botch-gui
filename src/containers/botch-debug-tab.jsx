@@ -3,6 +3,7 @@ import React from 'react';
 import bindAll from 'lodash.bindall';
 import VM from 'scratch-vm';
 import log from '../lib/log.js';
+import {getStageDimensions} from '../lib/screen-utils';
 
 import {connect} from 'react-redux';
 
@@ -35,7 +36,9 @@ const messages = defineMessages({
     }
 });
 
-
+/**
+ * @since botch-0.2
+ */
 class BotchDebugTab extends React.Component {
 
     /**
@@ -45,7 +48,7 @@ class BotchDebugTab extends React.Component {
      * @since botch-0.3
      */
     static getPointFromEvent (event) {
-        const svg = event.currentTarget;
+        const svg = event.target;
         // Create an SVG point that contains x & y values
         const point = svg.createSVGPoint();
 
@@ -84,9 +87,9 @@ class BotchDebugTab extends React.Component {
      *                |                          |
      *                | |----|   |----|   |----| |
      *                |-|____|-|-|____|-|-|____|-|
-     *   |________|-|-| |  \________|________/ | |-|-|_______|
-     *        |         |           |          |         |
-     *                  |           px         |
+     *     \________/-| |  \________|________/ | |-\_______/
+     *          |       |           |          |       |
+     *          px      |           px         |       px
      *                  |----------------------|
      *                           groupw
      *
@@ -106,7 +109,8 @@ class BotchDebugTab extends React.Component {
         const midIndex = Math.floor(generation.length / 2);
         const midGroup = generation[midIndex];
         const midX = layout[midGroup[0].parentId].x - (BotchDebugTab.calcGroupWidth(midGroup, m) / 2);
-                
+        const midY = layout[midGroup[0].parentId].y;
+
         let rightLimit = midX - m.deltaw;
         // first calculate left side
         for (const nodeGroup of generation.slice(0, midIndex).reverse()){
@@ -117,11 +121,10 @@ class BotchDebugTab extends React.Component {
             
             for (let i = 0; i < nodeGroup.length; i++){
                 const node = nodeGroup[i];
-                // |____|-|-|____|-|-|____|-|-|
-                //    |        |        |
+
                 node.x = rightLimit - groupw + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
                 node.xoff = node.x - (m.nodew / 2);
-                node.y = vb.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
+                node.y = midY - m.levh;
                 node.yoff = node.y - (m.nodeh / 2);
             }
             rightLimit = rightLimit - groupw - (2 * m.deltaw);
@@ -141,7 +144,7 @@ class BotchDebugTab extends React.Component {
                 
                 node.x = leftLimit + (m.nodew / 2) + ((m.nodew + (m.deltaw * 2)) * i);
                 node.xoff = node.x - (m.nodew / 2);
-                node.y = vb.height - (m.nodeh + (m.levh * (genNum - 1)) - (m.nodeh / 2));
+                node.y = midY - m.levh;
                 node.yoff = node.y - (m.nodeh / 2);
             }
             leftLimit = leftLimit + groupw + (2 * m.deltaw);
@@ -177,7 +180,7 @@ class BotchDebugTab extends React.Component {
         p0.expanded = true;
         p0.visible = false;
         p0.x = 0;
-        p0.y = vp.height + m.deltah + (m.nodeh / 2);
+        p0.y = vp.height + (m.nodeh / 2);
         p0.xoff = p0.x - (m.nodew / 2);
         p0.yoff = p0.y - (m.nodeh / 2);
         layout.parent_0 = p0;
@@ -251,6 +254,41 @@ class BotchDebugTab extends React.Component {
         BOTCH.debugLayout = layout;
         return layout;
     }
+
+    static calcViz (stageSize, isFullScreen){
+        const stageDimensions = getStageDimensions(stageSize, isFullScreen);
+        log.log(stageDimensions);
+        const viz = {};
+        const vp = { // occupied screen
+            width: window.innerWidth - stageDimensions.width - 40,
+            height: window.innerHeight - 100 // TO DO approximate calculation ...
+        };
+        viz.viewport = vp;
+    
+        viz.viewBox = {
+            x: -vp.width / 2,
+            y: 0,
+            width: vp.width,
+            height: vp.height
+        };
+
+        viz.measures = {
+            deltah: 15,
+            deltaw: 25,
+            nodeh: 150,
+            nodew: 100
+        };
+
+        viz.isPointerDown = false;
+        viz.pointerOrigin = null;
+        viz.zoom = 1.0;
+        const m = viz.measures;
+        
+        m.levh = (m.deltah * 2) + m.nodeh;
+        log.log('Botch Debug Tab: viz = ', viz);
+        return viz;
+    }
+
     /**
      * Given a name and a list of existing names, if name is in the list
      * generates a new name appending numbers to it.
@@ -285,57 +323,56 @@ class BotchDebugTab extends React.Component {
         bindAll(this, [
             'handleItemSelect',
             'updateSprites',
+            'updateVizViewport',
             'handleTreeDragStart',
             'handleTreeDragMove',
             'handleTreeDragStop',
             'handleTreeWheel'
         ]);
 
-        const viz = {};
-        const vp = { // occupied screen
-            width: 500,
-            height: 650};
-
-        viz.viewport = vp;
-    
-        viz.viewBox = {
-            x: -vp.width / 2,
-            y: 0,
-            width: vp.width,
-            height: vp.height
-        };
-
-        viz.measures = {
-            deltah: 15,
-            deltaw: 25,
-            nodeh: 150,
-            nodew: 100
-        };
-
-        viz.isPointerDown = false;
-        viz.pointerOrigin = null;
-        viz.zoom = 1.0;
-        const m = viz.measures;
-        
-        m.levh = (m.deltah * 2) + m.nodeh;
-
         this.state = {
             libSprites: [],
             layout: {},
-            viz: viz};
+            viz: BotchDebugTab.calcViz(this.props.stageSize, this.props.isFullScreen)};
+        
     }
 
+    /**
+     * @since botch-0.2
+     */
     componentDidMount () {
         log.log('Botch: botch-debug-tab ComponentDidMount');
         this.updateSprites();
         this.props.vm.on('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
+        window.addEventListener('resize', this.updateVizViewport);
     }
+
+    /**
+     * @since botch-0.2
+     */
     componentWillUnmount () {
         log.log('Botch: botch-debug-tab ComponentWillUnmount');
         this.props.vm.removeListener('BOTCH_STORAGE_HELPER_UPDATE', this.updateSprites);
+        window.removeEventListener('resize', this.updateVizViewport);
     }
     
+    /**
+     * @since botch-0.3
+     */
+    updateVizViewport (){
+        
+        log.log('BotchDebugTab: Updating only viewport viz ...');
+        const newState = {...this.state};
+        const newViz = {...this.state.viz};
+        newViz.viewport = BotchDebugTab.calcViz(this.props.stageSize, this.props.isFullScreen).viewport;
+        newState.viz = newViz;
+        this.setState(newState);
+        
+    }
 
+    /**
+     * @since botch-0.2
+     */
     updateSprites (){
                 
         if (!window.BOTCH){
@@ -360,7 +397,10 @@ class BotchDebugTab extends React.Component {
 
     }
 
-
+    /**
+     * @since botch-0.2
+     * @returns {*} tags list
+     */
     getTags (){
         if (!window.BOTCH){
             log.error('Botch extension is not loaded !');
@@ -369,6 +409,11 @@ class BotchDebugTab extends React.Component {
         return BOTCH.storageHelper.getAllTags();
     }
 
+    /**
+     * TO DO doesn't do anything ...
+     * @param {int} index index of selected element
+     * @since botch-0.2
+     */
     handleSelect (index){
         // TO DO DOES NOT SHOW ANYTHING !
         log.log(`Selected tab: ${index}`);
@@ -380,6 +425,9 @@ class BotchDebugTab extends React.Component {
      */
     handleTreeDragStart (event){
         
+        // Prevents user to do a selection on the page
+        event.preventDefault();
+
         const newViz = {...this.state.viz};
         newViz.isPointerDown = true;
         newViz.pointerOrigin = BotchDebugTab.getPointFromEvent(event);
@@ -427,7 +475,9 @@ class BotchDebugTab extends React.Component {
     /**
      * @since botch-0.3
      */
-    handleTreeDragStop (){
+    handleTreeDragStop (event){
+        // Prevents user to do a selection on the page
+        event.preventDefault();
         const newViz = {...this.state.viz};
         newViz.isPointerDown = false;
         this.setState({
@@ -471,6 +521,10 @@ class BotchDebugTab extends React.Component {
         }
     }
 
+    /**
+     * @since botch-0.2
+     * @param {@sis} item selected item
+     */
     handleItemSelect (item) {
         // Randomize position of library sprite
         randomizeSpritePosition(item);
@@ -484,7 +538,10 @@ class BotchDebugTab extends React.Component {
         log.log('Should I do something on close ?');
     }
 
-
+    /**
+     * @since botch-0.2
+     * @returns {*} rendered component
+     */
     render () {
         
         return (<BotchLifeTree
@@ -513,6 +570,8 @@ BotchDebugTab.propTypes = {
             name: PropTypes.string.isRequired
         }))
     }),
+    stageSize: PropTypes.string.isRequired,
+    isFullScreen: PropTypes.bool.isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

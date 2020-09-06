@@ -382,6 +382,7 @@ const GUIComponent = props => {
                                     {botchDebugTabVisible ? <BotchDebugTab
                                         isRendererSupported={isRendererSupported}
                                         isRtl={isRtl}
+                                        isFullScreen={isFullScreen}
                                         stageSize={stageSize}
                                         vm={vm}
                                     /> : null}

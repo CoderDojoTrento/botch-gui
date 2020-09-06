@@ -19,9 +19,7 @@ import {showStandardAlert, closeAlertWithId} from '../reducers/alerts';
 class OrganismTab extends React.Component {
     constructor (props) {
         super(props);
-        this.getCostume = this.getCostume.bind(this);
-        this.showCostume = this.showCostume.bind(this);
-        // this.state = {selectedSoundIndex: 0};
+        
   
         log.log(props);
     }
@@ -40,7 +38,6 @@ class OrganismTab extends React.Component {
                 width={400}
                 height={400}
                 style={{border: '1px solid black', backgroundColor: 'white'}}
-                onClick={this.handleCostume}
             />
         );
     }

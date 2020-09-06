@@ -225,6 +225,11 @@ class BotchLifeTree extends React.Component {
         const connectorStyle = {
             stroke: 'brown',
             strokeWidth: '10px'};
+        
+        const treeBaseStyle = {
+            ...connectorStyle
+        };
+        treeBaseStyle.strokeWidth = '15px';
 
         const vp = this.props.viz.viewport;
         const m = this.props.viz.measures;
@@ -245,6 +250,17 @@ class BotchLifeTree extends React.Component {
                 onWheel={this.handleOnWheel}
                 style={{border: '1px', red: 'solid'}}
             >
+                {Object.keys(fl).filter(key => fl[key].generation === 1)
+                    .map(key => (
+                
+                        <path
+                            
+                            d={`M ${fl[key].x} ${fl[key].y}
+                                L ${fl[key].x} ${fl[key].y + (m.nodeh / 2) + 20}`}
+                            style={treeBaseStyle}
+                            key={typeof fl[key].name === 'string' ? `p${fl[key].name}` : `p${fl[key].rawURL}`}
+                        />
+                    ))}
                 {Object.keys(fl).filter(key => fl[key].generation > 1)
                     .map(key => (
                 

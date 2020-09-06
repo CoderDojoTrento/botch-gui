@@ -1,6 +1,8 @@
 import {defineMessages} from 'react-intl';
 import sharedMessages from '../shared-messages';
 import triangle from '!raw-loader!./triangle.svg';
+import plankton from '!raw-loader!./plankton2.svg';
+import poison from '!raw-loader!./poison2.svg';
 
 import md5 from 'js-md5';
 
@@ -92,6 +94,66 @@ const projectData = translateFunction => {
                 visible: true,
                 x: 0,
                 y: 0,
+                size: 100,
+                direction: 90,
+                draggable: false,
+                rotationStyle: 'all around'
+            },
+            {
+                isStage: false,
+                name: 'food',
+                variables: {},
+                lists: {},
+                broadcasts: {},
+                blocks: {},
+                currentCostume: 0,
+                costumes: [
+                    {
+                        assetId: md5(plankton),
+                        name: 'plankton',
+                        bitmapResolution: 1,
+                        md5ext: `${md5(plankton)}.svg`,
+                        dataFormat: 'svg',
+                        rotationCenterX: 35,
+                        rotationCenterY: 26
+                    }
+                ],
+                sounds: [],
+                volume: 100,
+                layerOrder: 1,
+                visible: true,
+                x: 100,
+                y: 0,
+                size: 100,
+                direction: 90,
+                draggable: false,
+                rotationStyle: 'all around'
+            },
+            {
+                isStage: false,
+                name: 'poison',
+                variables: {},
+                lists: {},
+                broadcasts: {},
+                blocks: {},
+                currentCostume: 0,
+                costumes: [
+                    {
+                        assetId: md5(poison),
+                        name: 'poison',
+                        bitmapResolution: 1,
+                        md5ext: `${md5(poison)}.svg`,
+                        dataFormat: 'svg',
+                        rotationCenterX: 35,
+                        rotationCenterY: 35
+                    }
+                ],
+                sounds: [],
+                volume: 100,
+                layerOrder: 1,
+                visible: true,
+                x: 0,
+                y: -100,
                 size: 100,
                 direction: 90,
                 draggable: false,

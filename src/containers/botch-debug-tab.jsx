@@ -48,7 +48,8 @@ class BotchDebugTab extends React.Component {
      * @since botch-0.3
      */
     static getPointFromEvent (event) {
-        const svg = event.target;
+        const svg = event.currentTarget;
+
         // Create an SVG point that contains x & y values
         const point = svg.createSVGPoint();
 
@@ -427,7 +428,9 @@ class BotchDebugTab extends React.Component {
         
         // Prevents user to do a selection on the page
         event.preventDefault();
-
+        if (event.target !== event.currentTarget){
+            return;
+        }
         const newViz = {...this.state.viz};
         newViz.isPointerDown = true;
         newViz.pointerOrigin = BotchDebugTab.getPointFromEvent(event);
@@ -448,9 +451,13 @@ class BotchDebugTab extends React.Component {
         if (!this.state.viz.isPointerDown) {
             return;
         }
+        
         // Prevents user to do a selection on the page
         event.preventDefault();
       
+        if (event.target !== event.currentTarget){
+            return;
+        }
         // Get the pointer position as an SVG Point
         const pointerPosition = BotchDebugTab.getPointFromEvent(event);
       
@@ -473,11 +480,15 @@ class BotchDebugTab extends React.Component {
     }
 
     /**
+     * @param {*} event the mouse event
      * @since botch-0.3
      */
     handleTreeDragStop (event){
         // Prevents user to do a selection on the page
         event.preventDefault();
+        if (event.target !== event.currentTarget){
+            return;
+        }
         const newViz = {...this.state.viz};
         newViz.isPointerDown = false;
         this.setState({

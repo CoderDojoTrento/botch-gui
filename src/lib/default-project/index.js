@@ -7,6 +7,8 @@ import backdrop from '!raw-loader!./cd21514d0531fdffb22204e0ec5ed84a.svg';
 // import costume1 from '!raw-loader!./b7853f557e4426412e64bb3da6531a99.svg';
 // import costume2 from '!raw-loader!./e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg';
 import triangle from '!raw-loader!./triangle.svg';
+import plankton from '!raw-loader!./plankton2.svg';
+import poison from '!raw-loader!./poison2.svg';
 /* eslint-enable import/no-unresolved */
 
 import md5 from 'js-md5';
@@ -47,6 +49,16 @@ const defaultProject = translator => {
         assetType: 'ImageVector',
         dataFormat: 'SVG',
         data: encoder.encode(triangle)
+    }, {
+        id: md5(plankton),
+        assetType: 'ImageVector',
+        dataFormat: 'SVG',
+        data: encoder.encode(plankton)
+    }, {
+        id: md5(poison),
+        assetType: 'ImageVector',
+        dataFormat: 'SVG',
+        data: encoder.encode(poison)
     }];
 };
 

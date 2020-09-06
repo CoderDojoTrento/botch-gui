@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {injectIntl} from 'react-intl';
 import getCostumeUrl from '../../lib/get-costume-url';
+import log from '../../lib/log.js';
 
 
 import LibraryItemComponent from '../../components/library-item/library-item.jsx';
@@ -23,10 +24,15 @@ class BotchLifeTreeItem extends React.PureComponent {
             'startRotatingIcons',
             'stopRotatingIcons'
         ]);
+        
         this.state = {
-            iconIndex: 0,
+            // iconIndex: 0,
+            // TO DO Botch: we added it, but don't like this
+            // https://github.com/CoderDojoTrento/botch-gui/issues/22
+            iconIndex: this.props.currentCostume,
             isRotatingIcon: false
         };
+        log.log('BotchLifeTreeItem state', this.state, 'props', this.props);
     }
     componentWillUnmount () {
         clearInterval(this.intervalId);
@@ -58,7 +64,9 @@ class BotchLifeTreeItem extends React.PureComponent {
             if (this.props.icons && this.props.icons.length) {
                 this.stopRotatingIcons();
                 this.setState({
-                    isRotatingIcon: true
+                    // TO DO Botch: we added it, but don't like this
+                    // https://github.com/CoderDojoTrento/botch-gui/issues/22
+                    // isRotatingIcon: true  // disabled
                 }, this.startRotatingIcons);
             }
         }
@@ -81,8 +89,10 @@ class BotchLifeTreeItem extends React.PureComponent {
         this.props.onMouseLeave(this.props.id);
     }
     startRotatingIcons () {
-        this.rotateIcon();
-        this.intervalId = setInterval(this.rotateIcon, 300);
+        // TO DO Botch: temporarily removed, but don't like this
+        // https://github.com/CoderDojoTrento/botch-gui/issues/22
+        // this.rotateIcon();
+        // this.intervalId = setInterval(this.rotateIcon, 300);
     }
     stopRotatingIcons () {
         if (this.intervalId) {
@@ -109,9 +119,12 @@ class BotchLifeTreeItem extends React.PureComponent {
         
         let iconURL;
         let costume = this.props.icons[0];
+        
         if (costume.asset){ // Botch: our sprites have full asset data
             if (this.props.icons &&
-                this.state.isRotatingIcon &&
+                // TO DO Botch: we added it, but don't like this
+                // https://github.com/CoderDojoTrento/botch-gui/issues/22
+                // this.state.isRotatingIcon &&
                 this.state.iconIndex < this.props.icons.length){
                 costume = this.props.icons[this.state.iconIndex];
             }
@@ -164,8 +177,11 @@ BotchLifeTreeItem.propTypes = {
     extensionId: PropTypes.string,
     featured: PropTypes.bool,
     hidden: PropTypes.bool,
+
     iconMd5: PropTypes.string,
     iconRawURL: PropTypes.string,
+    // TO DO Botch: we added it, but don't like this, right costume should be the first
+    currentCostume: PropTypes.number.isRequired,
     icons: PropTypes.arrayOf(
         PropTypes.shape({
             asset: PropTypes.object, // Botch

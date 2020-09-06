@@ -325,6 +325,7 @@ class BotchLifeTree extends React.Component {
      * @since botch-0.3
      */
     renderTreeItem (dataItem){
+        
         return (<BotchLifeTreeItem
             bluetoothRequired={dataItem.bluetoothRequired}
             collaborator={dataItem.collaborator}
@@ -339,6 +340,9 @@ class BotchLifeTree extends React.Component {
             iconMd5={(dataItem.json && dataItem.json.costumes[0]) ?
                 dataItem.json.costumes[0].md5ext : dataItem.md5}
             iconRawURL={dataItem.rawURL}
+            // TO DO Botch: we added it, but don't like this
+            // https://github.com/CoderDojoTrento/botch-gui/issues/22
+            currentCostume={dataItem.json && dataItem.json.currentCostume}
             icons={dataItem.json && dataItem.json.costumes}
             id={dataItem.md5}
             insetIconURL={dataItem.insetIconURL}

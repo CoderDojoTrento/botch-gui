@@ -104,7 +104,7 @@ class BotchDebugTab extends React.Component {
         if (genNum === 0){
             return;
         }
-        const vb = viz.viewBox;
+        
         const m = viz.measures;
         
         const midIndex = Math.floor(generation.length / 2);

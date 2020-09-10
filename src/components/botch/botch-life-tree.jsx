@@ -13,6 +13,8 @@ import styles from './botch-life-tree.css';
 import BotchLifeTreeItem from './botch-life-tree-item.jsx';
 import log from '../../lib/log.js';
 
+/* global BOTCH */
+
 const messages = defineMessages({
     filterPlaceholder: {
         id: 'gui.library.filterPlaceholder',
@@ -296,6 +298,14 @@ class BotchLifeTree extends React.Component {
                         </g>
                         
                     ))}
+                {Object.keys(fl).length >= BOTCH.constructor.MAX_STORAGE ?
+                    <text
+                        x={vb.x + (0.05 * vb.width)}
+                        y={vb.y + (0.05 * vb.height)}
+                        style={{'font-size': 14 * this.props.viz.zoom,
+                            'fill': 'red'}}
+                    > {`TREE IS FULL ! To empty it, click on the green flag!`}</text> :
+                    null}
             </svg>
         );
     }

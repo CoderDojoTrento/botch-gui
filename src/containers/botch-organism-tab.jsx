@@ -173,7 +173,7 @@ class BotchOrganismTab extends React.Component {
         const layout = {};
         
 
-        // fictitious node, outside viewport on purpose
+        // fictitious node, outside viewBox on purpose
         const p0 = {};
         
         p0.generation = 0;

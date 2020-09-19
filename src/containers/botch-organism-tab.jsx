@@ -44,32 +44,7 @@ class BotchOrganismTab extends React.Component {
     static get MIN_ZOOM (){
         return 2.0;
     }
-    /**
-     *
-     * @param {@s} event the mouse event
-     * @returns {{x:float,y:float}} the point in relative coordinates
-     * @since botch-0.3
-     */
-    static getPointFromEvent (event) {
-        const svg = event.currentTarget;
-
-        // Create an SVG point that contains x & y values
-        const point = svg.createSVGPoint();
-
-        // If even is triggered by a touch event, we get the position of the first finger
-        if (event.targetTouches) {
-            point.x = event.targetTouches[0].clientX;
-            point.y = event.targetTouches[0].clientY;
-        } else {
-            point.x = event.clientX;
-            point.y = event.clientY;
-        }
-        
-        // We get the current transformation matrix of the SVG and we inverse it
-        const invertedSVGMatrix = svg.getScreenCTM().inverse();
-        
-        return point.matrixTransform(invertedSVGMatrix);
-    }
+    
 
     /**
      * Calculates the layed out node group total width.
@@ -330,7 +305,8 @@ class BotchOrganismTab extends React.Component {
             'handleTreeDragStart',
             'handleTreeDragMove',
             'handleTreeDragStop',
-            'handleTreeWheel'
+            'handleTreeWheel',
+            'setSvgRef'
         ]);
 
         this.state = {
@@ -371,6 +347,43 @@ class BotchOrganismTab extends React.Component {
         newState.viz = newViz;
         this.setState(newState);
         
+    }
+
+    /**
+     *
+     * @param {@s} event the mouse event
+     * @returns {{x:float,y:float}} the point in relative coordinates
+     * @since botch-0.3
+     */
+    getPointFromEvent (event) {
+        // const svg = event.currentTarget;
+        
+        const svgDom = this.svgDom;
+
+        // Create an SVG point that contains x & y values
+        const point = svgDom.createSVGPoint();
+
+        // If even is triggered by a touch event, we get the position of the first finger
+        if (event.targetTouches) {
+            point.x = event.targetTouches[0].clientX;
+            point.y = event.targetTouches[0].clientY;
+        } else {
+            point.x = event.clientX;
+            point.y = event.clientY;
+        }
+        
+        // We get the current transformation matrix of the SVG and we inverse it
+        const invertedSVGMatrix = svgDom.getScreenCTM().inverse();
+        
+        return point.matrixTransform(invertedSVGMatrix);
+    }
+
+    /**
+     * @since botch-0.3
+     * @param {*} element the DOM svg
+     */
+    setSvgRef (element){
+        this.svgDom = element;
     }
 
     /**
@@ -426,15 +439,15 @@ class BotchOrganismTab extends React.Component {
      * @since botch-0.3
      */
     handleTreeDragStart (event){
-        
-        // Prevents user to do a selection on the page
+                
         event.preventDefault();
         if (event.target !== event.currentTarget){
             return;
         }
+        
         const newViz = {...this.state.viz};
         newViz.isPointerDown = true;
-        newViz.pointerOrigin = BotchOrganismTab.getPointFromEvent(event);
+        newViz.pointerOrigin = this.getPointFromEvent(event);
 
         this.setState({
             viz: newViz
@@ -448,22 +461,17 @@ class BotchOrganismTab extends React.Component {
      * @since botch-0.3
      */
     handleTreeDragMove (event){
-        // Only run this function if the pointer is down
+                
         if (!this.state.viz.isPointerDown) {
             return;
         }
-        
-        // Prevents user to do a selection on the page
+                
         event.preventDefault();
-      
-        if (event.target !== event.currentTarget){
-            return;
-        }
+        
         // Get the pointer position as an SVG Point
-        const pointerPosition = BotchOrganismTab.getPointFromEvent(event);
-      
-        // Update the viewBox variable with the distance from origin and current position
-        // We don't need to take care of a ratio because this is handled in the getPointFromEvent function
+        const pointerPosition = this.getPointFromEvent(event);
+              
+        // Not caring of ratio because this is handled in the getPointFromEvent function
         const oldViz = this.state.viz;
         const oldViewBox = oldViz.viewBox;
         const newViewBox = {
@@ -485,11 +493,11 @@ class BotchOrganismTab extends React.Component {
      * @since botch-0.3
      */
     handleTreeDragStop (event){
-        // Prevents user to do a selection on the page
-        event.preventDefault();
-        if (event.target !== event.currentTarget){
+        if (!this.state.viz.isPointerDown) {
             return;
         }
+        event.preventDefault();
+        
         const newViz = {...this.state.viz};
         newViz.isPointerDown = false;
         this.setState({
@@ -528,7 +536,7 @@ class BotchOrganismTab extends React.Component {
      * @since botch-0.3
      */
     handleTreeWheel (event) {
-        const p = BotchOrganismTab.getPointFromEvent(event);
+        const p = this.getPointFromEvent(event);
         if (event.deltaY > 0) {
             this.zoom(1.05, p);
         } else {
@@ -566,11 +574,11 @@ class BotchOrganismTab extends React.Component {
             tags={this.getTags()}
             title={this.props.intl.formatMessage(messages.libraryTitle)}
             onItemSelected={this.handleItemSelect}
+            setSvgRef={this.setSvgRef}
             onMouseDown={this.handleTreeDragStart}
             onMouseMove={this.handleTreeDragMove}
             onMouseUp={this.handleTreeDragStop}
             onWheel={this.handleTreeWheel}
-            
         />);
         
     }
@@ -586,7 +594,7 @@ BotchOrganismTab.propTypes = {
         }))
     }),
     stageSize: PropTypes.string.isRequired,
-    isFullScreen: PropTypes.bool.isRequired,
+    isFullScreen: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

@@ -41,8 +41,8 @@ class BotchLifeTree extends React.Component {
             'handleClose',
             'handleFilterChange',
             'handleFilterClear',
-            'handleMouseEnter',
-            'handleMouseLeave',
+            'handleMouseItemEnter',
+            'handleMouseItemLeave',
             'handlePlayingEnd',
             'handleSelect',
             'handleTagClick',
@@ -67,12 +67,27 @@ class BotchLifeTree extends React.Component {
             
         });
         if (this.props.setStopHandler) this.props.setStopHandler(this.handlePlayingEnd);
+        window.addEventListener('mousemove', this.handleOnMouseMove);
+        window.addEventListener('touchmove', this.handleOnMouseMove);
+        window.addEventListener('mouseup', this.handleOnMouseUp);
+        window.addEventListener('touchend', this.handleOnMouseUp);
+        window.addEventListener('touchcancel', this.handleOnMouseUp);
     }
     componentDidUpdate (prevProps, prevState) {
         if (prevState.filterQuery !== this.state.filterQuery ||
             prevState.selectedTag !== this.state.selectedTag) {
             this.scrollToTop();
         }
+    }
+
+    /**
+     * @since botch-0.3
+     */
+    componentWillUnmount () {
+        window.removeEventListener('mousemove', this.handleOnMouseMove);
+        window.removeEventListener('mouseup', this.handleOnMouseUp);
+        window.removeEventListener('touchend', this.handleOnMouseUp);
+        window.removeEventListener('touchcancel', this.handleOnMouseUp);
     }
 
     /**
@@ -98,6 +113,7 @@ class BotchLifeTree extends React.Component {
     handleOnMouseUp (event){
         this.props.onMouseUp(event);
     }
+    
 
     /**
      * @param {object}  event mouse event
@@ -129,7 +145,7 @@ class BotchLifeTree extends React.Component {
             });
         }
     }
-    handleMouseEnter (id) {
+    handleMouseItemEnter (id) {
         // don't restart if mouse over already playing item
         if (this.props.onItemMouseEnter && this.state.playingItem !== id) {
             this.props.onItemMouseEnter(this.getFilteredLayout()[id]);
@@ -138,7 +154,7 @@ class BotchLifeTree extends React.Component {
             });
         }
     }
-    handleMouseLeave (id) {
+    handleMouseItemLeave (id) {
         if (this.props.onItemMouseLeave) {
             this.props.onItemMouseLeave(this.getFilteredLayout()[id]);
             this.setState({
@@ -241,15 +257,13 @@ class BotchLifeTree extends React.Component {
         
         return (
             <svg
+                ref={this.props.setSvgRef}
                 width={vp.width}
                 height={vp.height}
                 viewBox={this.getViewBox()}
                 onMouseDown={this.handleOnMouseDown}
-                onMouseMove={this.handleOnMouseMove}
-                onMouseUp={this.handleOnMouseUp}
                 onTouchStart={this.handleOnMouseDown}
-                onTouchMove={this.handleOnMouseMove}
-                onTouchEnd={this.handleOnMouseUp}
+                /* mmm there is onTouchOut */
                 onWheel={this.handleOnWheel}
                 style={{border: '1px', red: 'solid'}}
             >
@@ -300,17 +314,17 @@ class BotchLifeTree extends React.Component {
                     ))}
                 {Object.keys(fl).length - 1 >= BOTCH.constructor.MAX_STORAGE ?
                     <text
-                        x={vb.x + (0.05 * vb.width)}
-                        y={vb.y + (0.05 * vb.height)}
-                        style={{'font-size': 14 * this.props.viz.zoom,
-                            'fill': 'red'}}
+                        x={vb.x + (0.80 * vb.width)}
+                        y={vb.y + (0.02 * vb.height)}
+                        style={{fontSize: 14 * this.props.viz.zoom,
+                            fill: 'red'}}
                     >
 
-                        <tspan> {`TREE IS FULL!`}</tspan>
+                        <tspan> {`TREE is FULL!`}</tspan>
                         <tspan
-                            x={vb.x + (0.05 * vb.width)}
+                            x={vb.x + (0.80 * vb.width)}
                             dy={(0.03 * vb.height)}
-                        > {`To empty it, click green flag!`}</tspan>
+                        > {`To empty: click the green flag`}</tspan>
                     </text> :
                     null}
 
@@ -323,15 +337,14 @@ class BotchLifeTree extends React.Component {
      * @since botch-0.3
      */
     renderTreeContainer (){
-        const LOADED = this.renderTree();
-
+        const svg = this.renderTree();
         return (<div
             className={classNames(styles.libraryScrollGrid, {
                 [styles.withFilterBar]: this.props.filterable || this.props.tags
             })}
             ref={this.setFilteredDataRef}
         >
-            {this.state.loaded ? <span>{LOADED}</span> : (
+            {this.state.loaded ? <span>{svg}</span> : (
                 <div className={styles.spinnerWrapper}>
                     <Spinner
                         large
@@ -373,8 +386,8 @@ class BotchLifeTree extends React.Component {
             isPlaying={this.state.playingItem === dataItem.md5}
             name={dataItem.name}
             showPlayButton={this.props.showPlayButton}
-            onMouseEnter={this.handleMouseEnter}
-            onMouseLeave={this.handleMouseLeave}
+            onMouseEnter={this.handleMouseItemEnter}
+            onMouseLeave={this.handleMouseItemLeave}
             onSelect={this.handleSelect}
         />);
     }
@@ -449,6 +462,7 @@ BotchLifeTree.propTypes = {
     intl: intlShape.isRequired,
     onMouseDown: PropTypes.func,
     onMouseUp: PropTypes.func,
+    
     onMouseMove: PropTypes.func,
     onWheel: PropTypes.func,
     onItemMouseEnter: PropTypes.func,
@@ -457,7 +471,8 @@ BotchLifeTree.propTypes = {
     setStopHandler: PropTypes.func,
     showPlayButton: PropTypes.bool,
     tags: PropTypes.arrayOf(PropTypes.shape(TagButton.propTypes)),
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    setSvgRef: PropTypes.func.isRequired
 };
 
 BotchLifeTree.defaultProps = {

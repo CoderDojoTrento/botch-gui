@@ -304,8 +304,16 @@ class BotchLifeTree extends React.Component {
                         y={vb.y + (0.05 * vb.height)}
                         style={{'font-size': 14 * this.props.viz.zoom,
                             'fill': 'red'}}
-                    > {`TREE IS FULL !\nTo empty it, click on the green flag!`}</text> :
+                    >
+
+                        <tspan> {`TREE IS FULL!`}</tspan>
+                        <tspan
+                            x={vb.x + (0.05 * vb.width)}
+                            dy={(0.03 * vb.height)}
+                        > {`To empty it, click green flag!`}</tspan>
+                    </text> :
                     null}
+
             </svg>
         );
     }
